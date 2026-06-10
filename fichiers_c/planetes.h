@@ -1,34 +1,27 @@
-
-#define T 1 // en dixième de jour 
+#define G 6.674e-11
+#define T 8640 // temps en seconde (delta t)
+#define mS 1.989e30
 
 typedef struct s_vect{
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
 } Vect;
 
 typedef struct s_planet{
     Vect a;
     Vect v;
     Vect pos;
-    float m;
+    double m;
 } Planet;
 
-/**
- * @brief Calcule la vitesse a un temps après un temps T
- * @param v Vitesse à l'instant T-1
- * @param a Accélération
- */
-float euler_vitesse(float v, float a);
 
-/**
- * @brief Calcule l'accélération de la planète
- * @param 
- */
+void euler(Planet * planet);
 
- float accel();
+double norme(Vect vecteur);
 
- /**
-  * @brief Calcule norme;
-  */
- float norme(Vect vecteur);
+double acceleration(Planet planet);
+
+Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz);
+
+void print_debug(Planet planet, int t);
