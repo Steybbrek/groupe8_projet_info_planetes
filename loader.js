@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from "jsm/controls/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 class Planete {
     constructor(data, position) {
@@ -7,11 +7,18 @@ class Planete {
         this.diametre = data["Diametre"];
         this.color = data["Color"]
         this.position = position
-        this.geo = new THREE.SphereGeometry(0.5, 32, 32);
+        if(this.diametre / 1e6 > 0.1) {
+            this.geo = new THREE.SphereGeometry(this.diametre / 1e6, 32, 32);
+        }
+        else {
+        this.geo = new THREE.SphereGeometry(0.1, 32, 32);
+        }
         this.mat = new THREE.MeshBasicMaterial({
             color: this.color.toString()
         });
         this.mesh = new THREE.Mesh(this.geo, this.mat);
+        this.scale = 1e10;
+
     }
 
     print() {
@@ -24,33 +31,32 @@ class Planete {
 
     update_position(i) {
         if(this.name != "Sun") {
-            const scale = 1e10;
-            const x = this.position[0][0][0] / scale
-            const y = this.position[0][0][1] / scale
-            const z = this.position[0][0][2] / scale
+            const x = this.position[0][0][0] / this.scale
+            const y = this.position[0][0][1] / this.scale
+            const z = this.position[0][0][2] / this.scale
             this.mesh.position.set(x, y, z)
-            console.log(this.position[0][0])
         }
     }
 
-    get_name() {
-        return this.name;
-    }
-
-    get_diametre() {
-        return this.diametre
-    }
-
-    get_radius() {
-        return this.diametre / 2;
-    }
-
-    get_color() {
-        return this.color;
-    }
-
-    get_position(i) {
-        return this.position[i]
+    drawOrbite() {
+        if(this.name != "Sun") {
+            let points = []
+            this.position.forEach(pos => {
+                let point_position = new THREE.Vector3
+                point_position.x = pos[0][0] / this.scale
+                point_position.y = pos[0][1] / this.scale
+                point_position.z = pos[0][2] / this.scale
+                points.push(point_position)
+            });
+            const geo = new THREE.BufferGeometry().setFromPoints(points)
+            const mat = new THREE.LineBasicMaterial({ 
+                color: this.color,
+                transparent: true,
+                opacity: 0.3
+            });
+            const mesh = new THREE.Line(geo, mat)
+            return mesh
+        }
     }
 }
 
