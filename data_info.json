@@ -1,0 +1,12 @@
+{
+    "Sun" : {
+        "Name" : "Sun",
+        "Color" : "rgb(255, 255, 0)",
+        "Diametre" : 1392684
+    },
+    "Mercury" : {
+        "Name" : "Mercure",
+        "Color" : "rgb(128, 128, 128)",
+        "Diametre" : 4879
+    }
+}
