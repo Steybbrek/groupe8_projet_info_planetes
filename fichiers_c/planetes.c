@@ -149,7 +149,6 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
     return planet;
 }
 
-
 /**
  * @brief Remet toutes les valeurs des planètes à leur valeurs initiales
  * @param planets Liste des planète
@@ -170,46 +169,42 @@ Planet * reset(Planet * planets){
 }
 
 /**
- * @brief Créer une liste  de fichiers json pour sauvegarder les données de chaque planète
+ * @brief Créer une liste  de fichiers json pour sauvegarder les données de chaque planète (également lisibles)
  * @param files L'adresse de la liste d'adresse de fichiers
  * @param prefixe Le prefixe des fichiers json
  * @return Adresse de la liste ou NULL
  * @warning Il faut modifier manuellement le code en cas d'ajout 
  */
-FILE ** initFiles(FILE ** files, char * prefixe){
-    files = realloc(files, N_PLANETS * sizeof(FILE *));
-    char * name = malloc(sizeof(char)*256);
-    if(name == NULL) return NULL;
+TempFILE * initFiles(TempFILE * files, char * prefixe){
+    files = realloc(files, N_PLANETS * sizeof(TempFILE));
 
     // Mercure
-    strcpy(name,"./temp_json_files/");
-    strcat(name, prefixe);
-    strcat(name,"_mercure.json");
-    files[0] = fopen(name,"w");
-    fprintf(files[0],"    \"%s%s\":","mercure_",prefixe);
+    strcpy(files[0].path,"./temp_json_files/");
+    strcat(files[0].path, prefixe);
+    strcat(files[0].path,"_mercure.json");
+    files[0].file = fopen(files[0].path,"w+");
+    fprintf(files[0].file,"    \"%s%s\":","mercure_",prefixe);
 
     // Venus
-    strcpy(name,"./temp_json_files/");
-    strcat(name, prefixe);
-    strcat(name,"_venus.json");
-    files[1] = fopen(name,"w");
-    fprintf(files[1],"    \"%s%s\":","mars_",prefixe);
+    strcpy(files[1].path,"./temp_json_files/");
+    strcat(files[1].path, prefixe);
+    strcat(files[1].path,"_venus.json");
+    files[1].file = fopen(files[1].path,"w+");
+    fprintf(files[1].file,"    \"%s%s\":","venus_",prefixe);
 
     // Terre
-    strcpy(name,"./temp_json_files/");
-    strcat(name, prefixe);
-    strcat(name,"_terre.json");
-    files[2] = fopen(name,"w");
-    fprintf(files[2],"    \"%s%s\":","terre_",prefixe);
+    strcpy(files[2].path,"./temp_json_files/");
+    strcat(files[2].path, prefixe);
+    strcat(files[2].path,"_terre.json");
+    files[2].file = fopen(files[2].path,"w+");
+    fprintf(files[2].file,"    \"%s%s\":","terre_",prefixe);
 
     // Mars
-    strcpy(name,"./temp_json_files/");
-    strcat(name, prefixe);
-    strcat(name,"_mars.json");
-    files[3] = fopen(name,"w");
-    fprintf(files[3],"    \"%s%s\":","mars_",prefixe);
-
-    free(name);
+    strcpy(files[3].path,"./temp_json_files/");
+    strcat(files[3].path, prefixe);
+    strcat(files[3].path,"_mars.json");
+    files[3].file = fopen(files[3].path,"w+");
+    fprintf(files[3].file,"    \"%s%s\":","mars_",prefixe);
 
     return files;
 
@@ -217,6 +212,22 @@ FILE ** initFiles(FILE ** files, char * prefixe){
 
 void saveFile(FILE * file, Planet planet, int t){
     fprintf(file, ",\n      [[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+}
+
+/**
+ * @brief Copie le contenue d'un fichier dans un autre (cat)
+ * @param mainFile Fichier destination
+ * @param fileToPush Fichier origine
+ * @warning Pas de check de pointeur vide
+ */
+void exportFile(FILE * mainFile, FILE * fileToPush){
+    char c[1];
+    fseek(fileToPush,0,SEEK_SET);
+    c[0] = fgetc(fileToPush);
+    while (c[0]!=EOF){
+        fprintf(mainFile,c);
+        c[0] = fgetc(fileToPush);
+    }
 }
 
 /**

@@ -20,7 +20,7 @@ int main(){
     }
 
     // Euler Interact
-    FILE ** listeEulerInteract = malloc(N_PLANETS * sizeof(FILE *));
+    TempFILE * listeEulerInteract = malloc(N_PLANETS * sizeof(TempFILE));
     FILE * methodes = fopen("../fichiers_json/methodes.json","w");
     fprintf(methodes, "{\n");
     
@@ -29,17 +29,30 @@ int main(){
     
     for (int i = 0; i < N_PLANETS; i++){
         temp_planet = planets[i];
-        fprintf(listeEulerInteract[i],"[[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
+        fprintf(listeEulerInteract[i].file,"[[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
     }
-    for (int i = 1; i < 21; i++){
+    for (int i = 1; i < 3653; i++){
         eulerInteract(planets);
         for (int j = 0; j < N_PLANETS; j++){
-            saveFile(listeEulerInteract[j], planets[j], i);
+            saveFile(listeEulerInteract[j].file, planets[j], i);
         }
     }
     for (int i = 0; i < N_PLANETS; i++){
-        fprintf(listeEulerInteract[i],"]");
+        fprintf(listeEulerInteract[i].file,"]");
+        
     }
+
+    exportFile(methodes,listeEulerInteract[0].file);
+    fclose(listeEulerInteract[0].file);
+    remove(listeEulerInteract[0].path);
+
+    for (int i = 1 ; i < N_PLANETS ; i++){
+        fprintf(methodes,",\n");
+        exportFile(methodes,listeEulerInteract[i].file);
+        fclose(listeEulerInteract[i].file);
+        remove(listeEulerInteract[i].path);
+    }
+    fprintf(methodes,"\n}");
 
 
 /*     

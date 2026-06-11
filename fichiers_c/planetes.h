@@ -18,6 +18,10 @@ typedef struct s_planet{
     double m;
 } Planet;
 
+typedef struct s_temp_file{
+    FILE * file;
+    char path[256];
+}TempFILE;
 
 
 
@@ -37,8 +41,10 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
 
 Planet * reset(Planet * planets);
 
-FILE ** initFiles(FILE ** files, char * prefixe);
+TempFILE * initFiles(TempFILE * files, char * prefixe);
 
 void saveFile(FILE * file, Planet planet, int t);
+
+void exportFile(FILE * mainFile, FILE * fileToPush);
 
 void print_debug(Planet planet, int t);

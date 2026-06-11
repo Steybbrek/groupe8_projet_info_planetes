@@ -14,20 +14,8 @@
     ...
 }</code></pre>
 
-**ATTENTION :** Les fichiers json d'exemple possède de fois t = 0 par méthode, surement 1 d'initialisation et 1 du premier calcul.
-
-### planetes.json
-<pre><code>{
-    "planete":[
-        liste,
-        d'informations,
-        à,
-        définir,
-        ...
-    ]
-}
-</code></pre>
-
+**ATTENTION :** Le fichier json d'exemple possède de fois t = 0 par méthode, surement 1 d'initialisation et 1 du premier calcul.  
+On a donc supprimé le 1er t=0 pour avoir des données plus adaptées et simplifier les opérations
 ---
 
 ## Données planétaires : 
