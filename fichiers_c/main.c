@@ -27,20 +27,7 @@ int main(){
     planets = reset(planets);
     listeEulerInteract = initFiles(listeEulerInteract,"eulerInteract");
     
-    for (int i = 0; i < N_PLANETS; i++){
-        temp_planet = planets[i];
-        fprintf(listeEulerInteract[i].file,"[[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
-    }
-    for (int i = 1; i < 3653; i++){
-        eulerInteract(planets);
-        for (int j = 0; j < N_PLANETS; j++){
-            saveFile(listeEulerInteract[j].file, planets[j], i);
-        }
-    }
-    for (int i = 0; i < N_PLANETS; i++){
-        fprintf(listeEulerInteract[i].file,"]");
-        
-    }
+    eulerInteractTempFile(planets,listeEulerInteract,365.25);
 
     exportFile(methodes,listeEulerInteract[0].file);
     fclose(listeEulerInteract[0].file);

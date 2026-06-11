@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define N_PLANETS 4
+#define N_PLANETS 9
 #define G 6.67408e-11
 #define T 8640 // temps en seconde (delta t)
+#define S_TO_D 86400
 #define mS 1.989e30
 
 typedef struct s_vect{
@@ -44,6 +45,8 @@ Planet * reset(Planet * planets);
 TempFILE * initFiles(TempFILE * files, char * prefixe);
 
 void saveFile(FILE * file, Planet planet, int t);
+
+void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours);
 
 void exportFile(FILE * mainFile, FILE * fileToPush);
 

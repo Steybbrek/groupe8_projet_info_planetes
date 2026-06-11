@@ -157,13 +157,23 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
 Planet * reset(Planet * planets){
     planets = realloc(planets,sizeof(Planet)*N_PLANETS);
     // Mercure
-    planets[0] = initPlanet(3.302e23, -5.939249500394277E+10, -1.424142594711035E+10, 4.338754675023021E+09, 6.939545151869151E+02, -4.540444941343805E+04, -3.773696839065323E+03); 
+    planets[0] = initPlanet(3.302e23, -5.939249500394277e+10, -1.424142594711035e+10, 4.338754675023021e+09, 6.939545151869151e+02, -4.540444941343805e+04, -3.773696839065323e+03); 
     // Venus
-    planets[1] = initPlanet(48.685e23, -1.070725166099876E+11, 1.139346175891170E+10, 6.345074050304741E+09, -4.155817640337680E+03, -3.494715982962389E+04, -2.399645931443928E+02); 
+    planets[1] = initPlanet(48.685e23, -1.070725166099876e+11, 1.139346175891170e+10, 6.345074050304741e+09, -4.155817640337680e+03, -3.494715982962389e+04, -2.399645931443928e+02); 
     // Terre
-    planets[2] = initPlanet(5.97219e24, -2.982262782007100E+10, -1.497712589089212E+11, 2.524112971142679E+07, 2.875115297834278E+04, -5.912322191541242E+03, -9.010199215850889E-01);
+    planets[2] = initPlanet(5.97219e24, -2.982262782007100e+10, -1.497712589089212e+11, 2.524112971142679e+07, 2.875115297834278e+04, -5.912322191541242e+03, -9.010199215850889e-01);
     // Mars
-    planets[3] = initPlanet(6.4171e23, 1.948457196881133E+11, 8.312623598954162E+10, -3.009652509615280E+09, -8.633422290015989E+03, 2.433146747698761E+04, 7.215861409413744E+02); 
+    planets[3] = initPlanet(6.4171e23, 1.948457196881133e+11, 8.312623598954162e+10, -3.009652509615280e+09, -8.633422290015989e+03, 2.433146747698761e+04, 7.215861409413744e+02); 
+    // Jupiter
+    planets[4] = initPlanet(18.9819e26, -4.185842907497987e+11, 6.672393758476599e+11, 6.600004253878236e+09, -1.122350194732934e+04, -6.326098818069995e+03, 2.774691500916044e02); 
+    // Saturne
+    planets[5] = initPlanet(5.6834e26, 1.404645175816801e+12, 1.705625338362996e+11, -5.889295729628324e+10, -1.695896396373922e+03, -9.566860941524073e+03, -9.823364202462770e01); 
+    // Uranus
+    planets[6] = initPlanet(86.813e24, 1.395028718386390e+12, 2.554458131338562e+12, -8.585835704688668e+09, -6.026990776370782e+03, 2.946566820385188e+03, 8.876416418802502e01); 
+    // Neptune
+    planets[7] = initPlanet(102.409e24, 4.465925471043573e+12, 1.523616015850787e+11, -1.060594799610975e+11, -2.218508272557781e+02, 5.464150567074379e+03, -1.069683757738009e+02); 
+    // Lune
+    planets[8] = initPlanet(7.349e22, -2.945076249617782e+10, -1.497169462776675e+11, 4.465133798880875e+07, 2.852887058558411e+04, -4.897018941321519e+03, 6.958124137372379e+01); 
     
     return planets;
 }
@@ -206,12 +216,81 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
     files[3].file = fopen(files[3].path,"w+");
     fprintf(files[3].file,"    \"%s%s\":","mars_",prefixe);
 
+    // Jupiter
+    strcpy(files[4].path,"./temp_json_files/");
+    strcat(files[4].path, prefixe);
+    strcat(files[4].path,"_jupiter.json");
+    files[4].file = fopen(files[4].path,"w+");
+    fprintf(files[4].file,"    \"%s%s\":","jupiter_",prefixe);
+
+    // Saturne
+    strcpy(files[5].path,"./temp_json_files/");
+    strcat(files[5].path, prefixe);
+    strcat(files[5].path,"_saturne.json");
+    files[5].file = fopen(files[5].path,"w+");
+    fprintf(files[5].file,"    \"%s%s\":","saturne_",prefixe);
+
+    // Uranus
+    strcpy(files[6].path,"./temp_json_files/");
+    strcat(files[6].path, prefixe);
+    strcat(files[6].path,"_uranus.json");
+    files[6].file = fopen(files[6].path,"w+");
+    fprintf(files[6].file,"    \"%s%s\":","uranus_",prefixe);
+
+    // Neptune
+    strcpy(files[7].path,"./temp_json_files/");
+    strcat(files[7].path, prefixe);
+    strcat(files[7].path,"_neptune.json");
+    files[7].file = fopen(files[7].path,"w+");
+    fprintf(files[7].file,"    \"%s%s\":","neptune_",prefixe);
+
+    // Lune
+    strcpy(files[8].path,"./temp_json_files/");
+    strcat(files[8].path, prefixe);
+    strcat(files[8].path,"_lune.json");
+    files[8].file = fopen(files[8].path,"w+");
+    fprintf(files[8].file,"    \"%s%s\":","lune_",prefixe);
+
     return files;
 
 }
 
+/**
+ * @brief Envoie les infos de la planète dans un fichier json
+ * @param file Le fichier json
+ * @param planet Planète à afficher
+ * @param t L'instant t à laquelle les infos sont calculées
+ */
 void saveFile(FILE * file, Planet planet, int t){
     fprintf(file, ",\n      [[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+}
+
+/**
+ * @brief Sauvegarde les informations dans un fichier temporaire afin de libérer de la ram
+ * @param planet_list Liste des planètes
+ * @param TempFILE Liste des fichiers temporaires
+ * @param jours Nombre de jours à calculer
+ */
+void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours){
+    Planet temp_planet;
+
+    // boucle ajout des infos dans le bon format pour t = 0
+    for (int i = 0; i < N_PLANETS; i++){
+        temp_planet = planet_list[i];
+        fprintf(files_list[i].file,"[[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
+    }
+
+    // boucle ajout des infos dans le bon format pout t=1 à t=tmax
+    for (int i = 1; i < (int)((S_TO_D/T) * jours); i++){
+        eulerInteract(planet_list);
+        for (int j = 0; j < N_PLANETS; j++){
+            saveFile(files_list[j].file, planet_list[j], i);
+        }
+    }
+    for (int i = 0; i < N_PLANETS; i++){
+        fprintf(files_list[i].file,"]");
+        
+    }
 }
 
 /**

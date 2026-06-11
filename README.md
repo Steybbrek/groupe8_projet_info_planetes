@@ -23,7 +23,8 @@ On a donc supprimé le 1er t=0 pour avoir des données plus adaptées et simplif
 ### Position initiale : 
 
 Nous avons décidé de partir du [site de la NASA](https://ssd.jpl.nasa.gov/horizons/app.html/) afin d'obtenir les positions inititales de chaque planète.  
-Le temps de départ que nous avons choisi est le 10 Juin 2026 à 00:00 TDB (Temps Dynamique Barycentrique, unité de temps par défaut du site, utilisée en astronomie)  
-
+Le temps de départ que nous avons choisi est le 10 Juin 2026 à 00:00 TDB (Temps Dynamique Barycentrique)  
+Le TDB est l'unité de temps par défaut du site, il est surtout utilisé en astronomie.  
+Il est indépendant des irrégularités de la rotation terrestre.
 
 ---
