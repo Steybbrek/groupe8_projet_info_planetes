@@ -4,9 +4,24 @@
         "Color" : "rgb(255, 255, 0)",
         "Diametre" : 1392684
     },
-    "Mercury" : {
-        "Name" : "Mercure",
+    "mercure_eulerInteract" : {
+        "Name" : "Mercury",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 4879
+    },
+    "venus_eulerInteract" : {
+        "Name" : "venus",
+        "Color" : "rgb(128, 128, 128)",
+        "Diametre" : 12103
+    },
+    "terre_eulerInteract" : {
+        "Name" : "earth",
+        "Color" :"rgb(0, 255, 0)",
+        "Diametre" : 12742
+    },
+    "mars_eulerInteract" : {
+        "Name" : "Mars",
+        "Color" : "rgb(255, 0, 0)",
+        "Diametre" : 6799
     }
 }

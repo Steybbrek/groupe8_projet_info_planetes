@@ -47,4 +47,12 @@ function createStars(nb, distance_min) {
     return star
 }
 
-export {createScene, createCamera, createRenderer, createControls, createStars};
+function createLight() {
+    const color = 0xFFFFFF;
+    const intensity = 300;
+    const light = new THREE.PointLight(color, intensity);
+    light.position.set(0, 0, 0);
+    return light
+}
+
+export {createScene, createCamera, createRenderer, createControls, createStars, createLight};
