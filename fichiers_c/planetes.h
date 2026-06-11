@@ -1,4 +1,5 @@
-#define G 6.674e-11
+#define N_PLANETS 4
+#define G 6.67408e-11
 #define T 8640 // temps en seconde (delta t)
 #define mS 1.989e30
 

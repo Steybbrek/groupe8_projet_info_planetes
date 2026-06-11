@@ -20,7 +20,16 @@ double acceleration(Planet planet){
 }
 
 /**
- * @brief Calcule la vitesse a un temps après un temps T
+ * @brief Calcule la variable à multiplier par l'accélération en x, y et z quand il y a plusieurs planètes
+ * @param planets Liste des planètes
+ * @param id_target Id de la planète que l'on étudie
+ */
+double accelerationInteract(Planet *planets, char id_target){
+
+}
+
+/**
+ * @brief Calcule les informations d'une planète après T secondes
  * @param planet La planète dont on cherche les infos.
  */
 void euler(Planet * planet){
@@ -47,17 +56,26 @@ void euler(Planet * planet){
 }
 
 /**
+ * @brief Calcule 
+ * @param planets Liste des planètes
+ */
+void eulerInteract(Planet * planets){
+
+}
+
+/**
  * @brief Créer un struct planète et l'initialise
- * @param m Masse de la planète
- * @param x Position en x de la planète
- * @param y Position en y de la planète
- * @param z Position en z de la planète
- * @param vx Vitesse en x de la planète
- * @param vy Vitesse en y de la planète
- * @param vz Vitesse en z de la planète
+ * @param m Masse de la planète en kg
+ * @param x Position en x de la planète en m
+ * @param y Position en y de la planète en m
+ * @param z Position en z de la planète en m
+ * @param vx Vitesse en x de la planète en m/s
+ * @param vy Vitesse en y de la planète en m/s
+ * @param vz Vitesse en z de la planète en m/s
  * @return Struct Planet initialisé
  */
 Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz){
+
     Planet planet;
 
     // Initialise la masse
@@ -86,8 +104,7 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
  * @param planet Planète à afficher
  * @param t L'instant t à laquelle les infos sont calculées
  */
-
- void print_debug(Planet planet, int t){
+void print_debug(Planet planet, int t){
     printf("[[%f,%f,%f], [%f,%f,%f], %d]\n", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
     // [[x,y,z], [vx,vy,vz], t]
- }
+}

@@ -28,5 +28,14 @@
 }
 </code></pre>
 
+---
+
+## Données planétaires : 
+
+### Position initiale : 
+
+Nous avons décidé de partir du [site de la NASA](https://ssd.jpl.nasa.gov/horizons/app.html/) afin d'obtenir les positions inititales de chaque planète.  
+Le temps de départ que nous avons choisi est le 10 Juin 2026 à 00:00 TDB (Temps Dynamique Barycentrique, unité de temps par défaut du site, utilisée en astronomie)  
+
 
 ---
