@@ -21,7 +21,7 @@ async function main() {
     const button = document.getElementById("stage_autoplay")
     let stage = 1;
     //TO DO : AUTOGENERATE
-    slider.max = 36524-1
+    slider.max = 3652-1
     slider.addEventListener('input', (event) => {
         stage = parseInt(event.target.value);
         StageValue.innerText = stage;

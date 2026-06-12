@@ -4,47 +4,47 @@
         "Color" : "rgb(255, 255, 0)",
         "Diametre" : 1392684
     },
-    "mercure_eulerAsym" : {
+    "mercure_RK4" : {
         "Name" : "Mercury",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 4879
     },
-    "venus_eulerAsym" : {
+    "venus_RK4" : {
         "Name" : "Venus",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 12103
     },
-    "terre_eulerAsym" : {
+    "terre_RK4" : {
         "Name" : "Earth",
         "Color" :"rgb(0, 255, 0)",
         "Diametre" : 12742
     },
-    "lune_eulerAsym" : {
+    "lune_RK4" : {
         "Name" : "Moon",
         "Color" : "rgb(200, 200, 200)",
         "Diametre" : 3474
     },
-    "mars_eulerAsym" : {
+    "mars_RK4" : {
         "Name" : "Mars",
         "Color" : "rgb(255, 0, 0)",
         "Diametre" : 6799
     },
-    "jupiter_eulerAsym" : {
+    "jupiter_RK4" : {
         "Name" : "Jupiter",
         "Color" : "rgb(255, 165, 0)",
         "Diametre" : 139820
     },
-    "saturne_eulerAsym" : {
+    "saturne_RK4" : {
         "Name" : "Saturn",
         "Color" : "rgb(210, 180, 140)",
         "Diametre" : 116460
     },
-    "uranus_eulerAsym" : {
+    "uranus_RK4" : {
         "Name" : "Uranus",
         "Color" : "rgb(173, 216, 230)",
         "Diametre" : 50724
     },
-    "neptune_eulerAsym" : {
+    "neptune_RK4" : {
         "Name" : "Neptune",
         "Color" : "rgb(0, 0, 255)",
         "Diametre" : 49244

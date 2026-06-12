@@ -188,8 +188,84 @@ void eulerAsymInteract(Planet * planets, int pas){
  * @brief Fonction RK
  * @param
  */
-void fRK(){
-    //TODO : RK interact directe
+void rk4(Planet * planets, int pas){
+    double h = (double)pas;
+
+    // Stockage des k pour chaque planète
+    Vect k1_pos[N_PLANETS], k1_vel[N_PLANETS];
+    Vect k2_pos[N_PLANETS], k2_vel[N_PLANETS];
+    Vect k3_pos[N_PLANETS], k3_vel[N_PLANETS];
+    Vect k4_pos[N_PLANETS], k4_vel[N_PLANETS];
+
+    // Planètes temporaires pour évaluer a() à différents points
+    Planet temp[N_PLANETS];
+
+    // --- k1 : dérivées à t ---
+    for (int i = 0; i < N_PLANETS; i++) {
+        k1_pos[i] = planets[i].v;
+        k1_vel[i] = sumVect(
+            multVectScal(planets[i].pos, acceleration(planets[i])),
+            accelerationInteract(planets, i)
+        );
+    }
+
+    // --- k2 : dérivées à t + h/2 avec k1 ---
+    for (int i = 0; i < N_PLANETS; i++) {
+        temp[i] = planets[i];
+        temp[i].pos = sumVect(planets[i].pos, multVectScal(k1_pos[i], h/2));
+        temp[i].v   = sumVect(planets[i].v,   multVectScal(k1_vel[i], h/2));
+    }
+    for (int i = 0; i < N_PLANETS; i++) {
+        k2_pos[i] = temp[i].v;
+        k2_vel[i] = sumVect(
+            multVectScal(temp[i].pos, acceleration(temp[i])),
+            accelerationInteract(temp, i)
+        );
+    }
+
+    // --- k3 : dérivées à t + h/2 avec k2 ---
+    for (int i = 0; i < N_PLANETS; i++) {
+        temp[i] = planets[i];
+        temp[i].pos = sumVect(planets[i].pos, multVectScal(k2_pos[i], h/2));
+        temp[i].v   = sumVect(planets[i].v,   multVectScal(k2_vel[i], h/2));
+    }
+    for (int i = 0; i < N_PLANETS; i++) {
+        k3_pos[i] = temp[i].v;
+        k3_vel[i] = sumVect(
+            multVectScal(temp[i].pos, acceleration(temp[i])),
+            accelerationInteract(temp, i)
+        );
+    }
+
+    // --- k4 : dérivées à t + h avec k3 ---
+    for (int i = 0; i < N_PLANETS; i++) {
+        temp[i] = planets[i];
+        temp[i].pos = sumVect(planets[i].pos, multVectScal(k3_pos[i], h));
+        temp[i].v   = sumVect(planets[i].v,   multVectScal(k3_vel[i], h));
+    }
+    for (int i = 0; i < N_PLANETS; i++) {
+        k4_pos[i] = temp[i].v;
+        k4_vel[i] = sumVect(
+            multVectScal(temp[i].pos, acceleration(temp[i])),
+            accelerationInteract(temp, i)
+        );
+    }
+
+    // --- Mise à jour finale ---
+    for (int i = 0; i < N_PLANETS; i++) {
+        planets[i].pos = sumVect(planets[i].pos, multVectScal(
+            sumVect(k1_pos[i], sumVect(
+                multVectScal(k2_pos[i], 2),
+                sumVect(multVectScal(k3_pos[i], 2), k4_pos[i])
+            )), h/6
+        ));
+        planets[i].v = sumVect(planets[i].v, multVectScal(
+            sumVect(k1_vel[i], sumVect(
+                multVectScal(k2_vel[i], 2),
+                sumVect(multVectScal(k3_vel[i], 2), k4_vel[i])
+            )), h/6
+        ));
+    }
 }
 
 /**
@@ -381,6 +457,7 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
     for (int i = 1; i < ( DAY_TO_SEC * jours) / PAS_SAUVEGARDE; i++){
         for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_REEL);
+        //debugLune(planet_list,i);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }
@@ -389,6 +466,14 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
         fprintf(files_list[i].file,"]");
         
     }
+}
+
+void debugLune(Planet * planets, int jour){
+    double dx = planets[8].pos.x - planets[2].pos.x;
+    double dy = planets[8].pos.y - planets[2].pos.y;
+    double dz = planets[8].pos.z - planets[2].pos.z;
+    double dist = sqrt(dx*dx + dy*dy + dz*dz) / 1e3;
+    printf("Jour %4d | dist T-L = %8.0f km\n", jour, dist);
 }
 
 /**

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define N_PLANETS 9
 #define G 6.67408e-11
-#define PAS_REEL                     10           // fréquence des calcules (sec)
+#define PAS_REEL                     10000           // fréquence des calcules (sec)
 #define PAS_SAUVEGARDE               86400           // fréquence de sauvegarde (sec)
 #define PERIODE_ENREGISTREMENT       3652.5           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define DAY_TO_SEC 86400        // jour en secs
@@ -46,6 +46,8 @@ void eulerInteract(Planet * planets, int pas);
 
 void eulerAsymInteract(Planet * planets, int pas);
 
+void rk4(Planet * planets, int pas);
+
 Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz);
 
 Planet * reset(Planet * planets);
@@ -61,3 +63,5 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
 void exportFile(FILE * mainFile, FILE * fileToPush);
 
 void print_debug(Planet planet, int t);
+
+void debugLune(Planet * planets, int jour);
