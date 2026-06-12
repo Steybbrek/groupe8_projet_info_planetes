@@ -37,17 +37,26 @@ double acceleration(Planet planet){
 }
 
 /**
- * @brief Calcule la variable à multiplier par l'accélération en x, y et z quand il y a plusieurs planètes
+ * @brief Calcule les forces appliquer sur l'objet par les autres planètes
  * @param planets Liste des planètes
  * @param id_target Id de la planète que l'on étudie
  */
-double accelerationInteract(Planet *planets, char id_target){
-    double a = 0;
-    double r;
+Vect accelerationInteract(Planet *planets, char id_target){
+    Vect a;
+    Vect r;
+    a.x = 0;
+    a.y = 0;
+    a.z = 0;
+    double norme_r;
+    double force;
     for (int i = 0 ; i < N_PLANETS ; i++){
         if (i != id_target){
-            r = norme(combVect(planets[i].pos,planets[id_target].pos));
-            a += (-G * planets[i].m / (r*r*r));
+            r = combVect(planets[i].pos,planets[id_target].pos);
+            norme_r = norme(r);
+            force = (-G * planets[i].m / (norme_r * norme_r * norme_r));
+            a.x += force * r.x;
+            a.y += force * r.y;
+            a.z += force * r.z;
         }
     }
     return a;
@@ -87,11 +96,17 @@ void euler(Planet * planet, int pas){
  * @param pas Pas en secondes
  */
 void eulerInteract(Planet * planets, int pas){
-    double a_list[N_PLANETS];
+    Vect  a_list[N_PLANETS];
     Planet * planet;
+    double a_sol;
 
     for (int i = 0; i < N_PLANETS ; i++){
-        a_list[i] = acceleration(planets[i]) + accelerationInteract(planets,i);
+        a_list[i] = accelerationInteract(planets,i);
+        a_sol = acceleration(planets[i]);
+        a_list[i].x += a_sol;
+        a_list[i].y += a_sol;
+        a_list[i].z += a_sol;
+
     }
 
     for (int i = 0 ; i < N_PLANETS ; i++){
@@ -99,9 +114,9 @@ void eulerInteract(Planet * planets, int pas){
 
         // Calcule de l'accélération à t-1
     
-        planet->a.x = a_list[i] * planet->pos.x;
-        planet->a.y = a_list[i] * planet->pos.y;
-        planet->a.z = a_list[i] * planet->pos.z;
+        planet->a.x = a_list[i].x * planet->pos.x;
+        planet->a.y = a_list[i].y * planet->pos.y;
+        planet->a.z = a_list[i].z * planet->pos.z;
 
         // Calcule de la position en t
 
@@ -123,11 +138,17 @@ void eulerInteract(Planet * planets, int pas){
  * @param pas Pas en secondes
  */
 void eulerAsymInteract(Planet * planets, int pas){
-    double a_list[N_PLANETS];
+    Vect  a_list[N_PLANETS];
     Planet * planet;
+    double a_sol;
 
     for (int i = 0; i < N_PLANETS ; i++){
-        a_list[i] = acceleration(planets[i]) + accelerationInteract(planets,i);
+        a_list[i] = accelerationInteract(planets,i);
+        a_sol = acceleration(planets[i]);
+        a_list[i].x += a_sol;
+        a_list[i].y += a_sol;
+        a_list[i].z += a_sol;
+
     }
 
     for (int i = 0 ; i < N_PLANETS ; i++){
@@ -141,9 +162,9 @@ void eulerAsymInteract(Planet * planets, int pas){
 
         // Calcule de l'accélération à t-1
 
-        planet->a.x = a_list[i] * planet->pos.x;
-        planet->a.y = a_list[i] * planet->pos.y;
-        planet->a.z = a_list[i] * planet->pos.z;
+        planet->a.x = a_list[i].x * planet->pos.x;
+        planet->a.y = a_list[i].y * planet->pos.y;
+        planet->a.z = a_list[i].z * planet->pos.z;
 
         // Calcule de la vitesse en t
 

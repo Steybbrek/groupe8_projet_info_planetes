@@ -34,7 +34,7 @@ Vect combVect(Vect a, Vect b);
 
 double acceleration(Planet planet);
 
-double accelerationInteract(Planet *planets, char id_target);
+Vect accelerationInteract(Planet *planets, char id_target);
 
 void euler(Planet * planet, int pas);
 
