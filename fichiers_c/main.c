@@ -17,7 +17,7 @@ int main(){
 
     print_debug(planets[0],0);
     for (int i = 1 ; i < 11 ; i++){
-        euler(&planets[0]);
+        euler(&planets[0],PAS_REEL);
         print_debug(planets[0],i);
     }
 
@@ -26,18 +26,18 @@ int main(){
     planets = reset(planets);
     listTempFiles = initFiles(listTempFiles,"euler");
     
-    createTempFiles(planets,listTempFiles,365.25,eulerInteract);
+    createTempFiles(planets,listTempFiles,PERIODE_ENREGISTREMENT,eulerInteract);
 
     saveToMain(methodes, listTempFiles);
 
     fprintf(methodes,",\n"); // Colle les listes
-    
+
     // Euler Asymétrique
     
     planets = reset(planets);
     listTempFiles = initFiles(listTempFiles,"eulerAsym");
     
-    createTempFiles(planets,listTempFiles,365.25,eulerAsymInteract);
+    createTempFiles(planets,listTempFiles,PERIODE_ENREGISTREMENT,eulerAsymInteract);
 
     saveToMain(methodes, listTempFiles);
 

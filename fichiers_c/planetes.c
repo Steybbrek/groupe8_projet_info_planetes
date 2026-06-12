@@ -54,10 +54,11 @@ double accelerationInteract(Planet *planets, char id_target){
 }
 
 /**
- * @brief Calcule les informations d'une planète après T secondes
+ * @brief Calcule les informations d'une planète après pas secondes
  * @param planet La planète dont on cherche les infos.
+ * @param pas Pas en secondes
  */
-void euler(Planet * planet){
+void euler(Planet * planet, int pas){
 
     // Calcule de l'accélération à t-1
     double a = acceleration(*planet);
@@ -68,23 +69,24 @@ void euler(Planet * planet){
 
     // Calcule de la position en t
 
-    planet->pos.x += planet->v.x * T;
-    planet->pos.y += planet->v.y * T;
-    planet->pos.z += planet->v.z * T;
+    planet->pos.x += planet->v.x * pas;
+    planet->pos.y += planet->v.y * pas;
+    planet->pos.z += planet->v.z * pas;
 
     // Calcule de la vitesse en t
 
-    planet->v.x += planet->a.x * T;
-    planet->v.y += planet->a.y * T;
-    planet->v.z += planet->a.z * T;
+    planet->v.x += planet->a.x * pas;
+    planet->v.y += planet->a.y * pas;
+    planet->v.z += planet->a.z * pas;
 
 }
 
 /**
  * @brief Calcule les informations avec la méthode d'Euler et des intéraction entre planètes
  * @param planets Liste des planètes
+ * @param pas Pas en secondes
  */
-void eulerInteract(Planet * planets){
+void eulerInteract(Planet * planets, int pas){
     double a_list[N_PLANETS];
     Planet * planet;
 
@@ -103,23 +105,24 @@ void eulerInteract(Planet * planets){
 
         // Calcule de la position en t
 
-        planet->pos.x += planet->v.x * T;
-        planet->pos.y += planet->v.y * T;
-        planet->pos.z += planet->v.z * T;
+        planet->pos.x += planet->v.x * pas;
+        planet->pos.y += planet->v.y * pas;
+        planet->pos.z += planet->v.z * pas;
 
         // Calcule de la vitesse en t
 
-        planet->v.x += planet->a.x * T;
-        planet->v.y += planet->a.y * T;
-        planet->v.z += planet->a.z * T;
+        planet->v.x += planet->a.x * pas;
+        planet->v.y += planet->a.y * pas;
+        planet->v.z += planet->a.z * pas;
     }
 }
 
 /**
  * @brief Calcule les informations avec la méthode d'Euler et des intéraction avec les autres planètes
  * @param planets Liste des planètes
+ * @param pas Pas en secondes
  */
-void eulerAsymInteract(Planet * planets){
+void eulerAsymInteract(Planet * planets, int pas){
     double a_list[N_PLANETS];
     Planet * planet;
 
@@ -132,9 +135,9 @@ void eulerAsymInteract(Planet * planets){
 
         // Calcule de la position en t
 
-        planet->pos.x += planet->v.x * T;
-        planet->pos.y += planet->v.y * T;
-        planet->pos.z += planet->v.z * T;
+        planet->pos.x += planet->v.x * pas;
+        planet->pos.y += planet->v.y * pas;
+        planet->pos.z += planet->v.z * pas;
 
         // Calcule de l'accélération à t-1
 
@@ -144,9 +147,9 @@ void eulerAsymInteract(Planet * planets){
 
         // Calcule de la vitesse en t
 
-        planet->v.x += planet->a.x * T;
-        planet->v.y += planet->a.y * T;
-        planet->v.z += planet->a.z * T;
+        planet->v.x += planet->a.x * pas;
+        planet->v.y += planet->a.y * pas;
+        planet->v.z += planet->a.z * pas;
     }
 }
 
@@ -331,7 +334,7 @@ void saveToMain(FILE * methodes, TempFILE * listeFiles){
  * @param jours Nombre de jours à calculer
  * @param f Fonction à utiliser
  */
-void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *)){
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int)){
     Planet temp_planet;
 
     // boucle ajout des infos dans le bon format pour t = 0
@@ -341,8 +344,8 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
     }
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
-    for (int i = 1; i < (int)((S_TO_D/T) * jours); i++){
-        f(planet_list);
+    for (int i = 1; i < (S_TO_D/PAS_SAUVEGARDE) * jours; i++){
+        for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_SAUVEGARDE);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }

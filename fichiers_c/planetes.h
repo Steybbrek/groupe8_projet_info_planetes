@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #define N_PLANETS 9
 #define G 6.67408e-11
-#define T 8640 // temps en seconde (delta t)
+#define PAS_REEL                     60           // fréquence des calcules (sec)
+#define PAS_SAUVEGARDE               86400           // fréquence de sauvegarde (sec)
+#define PERIODE_ENREGISTREMENT       3652.5           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define S_TO_D 86400
 #define mS 1.989e30
 
@@ -34,11 +36,11 @@ double acceleration(Planet planet);
 
 double accelerationInteract(Planet *planets, char id_target);
 
-void euler(Planet * planet);
+void euler(Planet * planet, int pas);
 
-void eulerInteract(Planet * planets);
+void eulerInteract(Planet * planets, int pas);
 
-void eulerAsymInteract(Planet * planets);
+void eulerAsymInteract(Planet * planets, int pas);
 
 Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz);
 
@@ -50,7 +52,7 @@ void saveFile(FILE * file, Planet planet, int t);
 
 void saveToMain(FILE * methodes, TempFILE * listeFiles);
 
-void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *));
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int));
 
 void exportFile(FILE * mainFile, FILE * fileToPush);
 
