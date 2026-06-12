@@ -153,6 +153,10 @@ void eulerAsymInteract(Planet * planets, int pas){
     }
 }
 
+/**
+ * @brief Fonction RK
+ * @param
+ */
 void fRK(){
     //TODO : RK interact directe
 }
@@ -345,7 +349,7 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
     for (int i = 1; i < (S_TO_D/PAS_SAUVEGARDE) * jours; i++){
-        for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_SAUVEGARDE);
+        for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_REEL);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }
