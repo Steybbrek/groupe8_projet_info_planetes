@@ -113,6 +113,12 @@ void eulerInteract(Planet * planets){
     }
 }
 
+void fRK(){
+
+}
+
+
+
 /**
  * @brief Créer un struct planète et l'initialise
  * @param m Masse de la planète en kg
@@ -262,7 +268,25 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
  * @param t L'instant t à laquelle les infos sont calculées
  */
 void saveFile(FILE * file, Planet planet, int t){
-    fprintf(file, ",\n      [[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+    fprintf(file, ",\n      [[%e,%e,%e], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+}
+
+/**
+ * @brief Sauvegarde le contenu des fichiers temporaires dans le fichier methodes et les supprime
+ * @param methodes Le fichier "methodes"
+ * @param listeFiles La liste de fichier temporaires
+ */
+void saveToMain(FILE * methodes, TempFILE * listeFiles){
+    exportFile(methodes,listeFiles[0].file);
+    fclose(listeFiles[0].file);
+    remove(listeFiles[0].path);
+
+    for (int i = 1 ; i < N_PLANETS ; i++){
+        fprintf(methodes,",\n");
+        exportFile(methodes,listeFiles[i].file);
+        fclose(listeFiles[i].file);
+        remove(listeFiles[i].path);
+    }
 }
 
 /**
@@ -270,6 +294,7 @@ void saveFile(FILE * file, Planet planet, int t){
  * @param planet_list Liste des planètes
  * @param TempFILE Liste des fichiers temporaires
  * @param jours Nombre de jours à calculer
+ * @note TODO: Ajouter un champ fonctions pour mettre directe la fonction voulue
  */
 void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours){
     Planet temp_planet;
@@ -277,7 +302,7 @@ void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jo
     // boucle ajout des infos dans le bon format pour t = 0
     for (int i = 0; i < N_PLANETS; i++){
         temp_planet = planet_list[i];
-        fprintf(files_list[i].file,"[[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
+        fprintf(files_list[i].file,"[[[%e,%e,%e], [%e,%e,%e], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
     }
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
@@ -315,6 +340,6 @@ void exportFile(FILE * mainFile, FILE * fileToPush){
  * @param t L'instant t à laquelle les infos sont calculées
  */
 void print_debug(Planet planet, int t){
-    printf("[[%lf,%lf,%lf], [%lf,%lf,%lf], %d]\n", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+    printf("[[%e,%e,%e], [%e,%e,%e], %d]\n", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
     // [[x,y,z], [vx,vy,vz], t]
 }

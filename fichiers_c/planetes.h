@@ -46,6 +46,8 @@ TempFILE * initFiles(TempFILE * files, char * prefixe);
 
 void saveFile(FILE * file, Planet planet, int t);
 
+void saveToMain(FILE * methodes, TempFILE * listeFiles);
+
 void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours);
 
 void exportFile(FILE * mainFile, FILE * fileToPush);

@@ -10,7 +10,7 @@ int main(){
     planets = reset(planets);
     
 
-    // Euler
+    // Euler - utilisé uniquement pour le visuel - il faudrait entièrement refaire la lune pour juste cette fonction
     printf("Euler :\n\n");
 
     print_debug(planets[0],0);
@@ -29,21 +29,15 @@ int main(){
     
     eulerInteractTempFile(planets,listeEulerInteract,365.25);
 
-    exportFile(methodes,listeEulerInteract[0].file);
-    fclose(listeEulerInteract[0].file);
-    remove(listeEulerInteract[0].path);
+    saveToMain(methodes, listeEulerInteract);
 
-    for (int i = 1 ; i < N_PLANETS ; i++){
-        fprintf(methodes,",\n");
-        exportFile(methodes,listeEulerInteract[i].file);
-        fclose(listeEulerInteract[i].file);
-        remove(listeEulerInteract[i].path);
-    }
+    free(listeEulerInteract);
+
     fprintf(methodes,"\n}");
 
 
 /*     
-    printf("K-R :\n\n");
+    printf("R-K :\n\n");
     mercury = initPlanet(3.285e23,4.700000e+10,0,0,0,5.897569e+04,0);
     print_debug(mercury,0);
     for (int i = 0 ; i < 3 ; i++){
