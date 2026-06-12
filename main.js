@@ -9,7 +9,6 @@ async function main() {
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // TO DO : CASSER
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         renderer.setSize( window.innerWidth, window.innerHeight);
@@ -22,7 +21,7 @@ async function main() {
     const button = document.getElementById("stage_autoplay")
     let stage = 1;
     //TO DO : AUTOGENERATE
-    slider.max = 3652
+    slider.max = 3651
     slider.addEventListener('input', (event) => {
         stage = parseInt(event.target.value);
         StageValue.innerText = stage;
@@ -80,12 +79,20 @@ async function main() {
     let time = 0
     function animate(t) {
         requestAnimationFrame(animate);
-        if(time%60 == 0 && autoplay == true) {
-            StageValue.innerText = stage+1;
-            stage += 1
+        if(autoplay == true) {
+            if(time%60 == 0) {
+                StageValue.innerText = stage+1;
+                stage += 1
+                planets.forEach(planet => planet.update_position(stage));
+            }
+            else {
+                planets.forEach(planet => planet.interpolation(stage, stage+1, time%60, 60));
+            }
+        }
+        else {
+            planets.forEach(planet => planet.update_position(document.getElementById('stage_value').textContent));
         }
         planets.forEach(planet => planet.update_rotation(t));
-        planets.forEach(planet => planet.update_position(document.getElementById('stage_value').textContent));
 
         const meshesPlanetes = planets.map(p => p.mesh);
         raycaster.setFromCamera(pointer, camera)

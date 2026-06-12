@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 class Planete {
     constructor(data, position) {
@@ -33,10 +34,28 @@ class Planete {
 
     update_position(i) {
         if(this.name != "Sun") {
-            const x = this.position[i][0][0] / this.scale_distance
-            const y = this.position[i][0][1] / this.scale_distance
-            const z = this.position[i][0][2] / this.scale_distance
+            const x = this.position[i][0][0] / this.scale_distance;
+            const y = this.position[i][0][1] / this.scale_distance;
+            const z = this.position[i][0][2] / this.scale_distance;
             this.mesh.position.set(x, y, z)
+        }
+    }
+
+    interpolation(start, end, frame, frametonext) {
+        if(this.name != "Sun") {
+            let vector_start = new THREE.Vector3(
+                this.position[start][0][0] / this.scale_distance,
+                this.position[start][0][1] / this.scale_distance,
+                this.position[start][0][2] / this.scale_distance,
+            )
+            let vecteur_end = new THREE.Vector3(
+                this.position[end][0][0] / this.scale_distance,
+                this.position[end][0][1] / this.scale_distance,
+                this.position[end][0][2] / this.scale_distance,
+            )
+
+            vector_start.lerp(vecteur_end, frame/frametonext);
+            this.mesh.position.copy(vector_start); // on a pas 3 valeur mais un vecteur donc c'est copy
         }
     }
 
@@ -98,7 +117,8 @@ function fetchJSONData(url) {
 function createPlanets(data_pos, data_info) {
     let planets = [];
     for (var planete_name in data_info) {
-        planets.push(new Planete(data_info[planete_name], data_pos[planete_name]));
+        if (planete_name != "Sun") { planets.push(new Planete(data_info[planete_name], data_pos[planete_name]));}
+        else{ planets.push(new Planete(data_info["Sun"], [[0,0,0]])) }
     }
     return planets;
 }

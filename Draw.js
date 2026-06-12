@@ -49,7 +49,7 @@ function createStars(nb, distance_min) {
 
 function createLight() {
     const color = 0xFFFFFF;
-    const intensity = 300;
+    const intensity = 1000;
     const light = new THREE.PointLight(color, intensity);
     light.position.set(0, 0, 0);
     return light
