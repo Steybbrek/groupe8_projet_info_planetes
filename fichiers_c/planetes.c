@@ -14,6 +14,20 @@ double norme(Vect vecteur){
 }
 
 /**
+ * @brief Renvoie la somme de 2 vecteurs
+ * @param u Vecteur u
+ * @param v Vecteur v
+ * @return Le vecteur somme des 2 autres vecteurs
+ */
+Vect sumVect(Vect u, Vect v){
+    Vect sum;
+    sum.x = u.x + v.x;
+    sum.y = u.y + v.y;
+    sum.z = u.z + v.z;
+    return sum;
+}
+
+/**
  * @brief Fait la somme de 2 vecteurs
  * @param a Premier vecteur
  * @param b Deuxième vecteur
@@ -25,6 +39,18 @@ Vect combVect(Vect a, Vect b){
     ab.y = a.y - b.y;
     ab.z = a.z - b.z;
     return ab;
+}
+
+/**
+ * @brief Renvoie un vectu=eur multiplié par un scalaire
+ * @param vecteur Le vecteur à multipler
+ * @param scalaire Le scalaire multiplicateur
+ */
+Vect multVectScal(Vect vecteur, double scalaire){
+    vecteur.x *= scalaire;
+    vecteur.y *= scalaire;
+    vecteur.z *= scalaire;
+    return vecteur;
 }
 
 /**
@@ -54,9 +80,8 @@ Vect accelerationInteract(Planet *planets, char id_target){
             r = combVect(planets[i].pos,planets[id_target].pos);
             norme_r = norme(r);
             force = (-G * planets[i].m / (norme_r * norme_r * norme_r));
-            a.x += force * r.x;
-            a.y += force * r.y;
-            a.z += force * r.z;
+
+            a = sumVect(a, multVectScal(r,force));
         }
     }
     return a;
@@ -72,21 +97,15 @@ void euler(Planet * planet, int pas){
     // Calcule de l'accélération à t-1
     double a = acceleration(*planet);
 
-    planet->a.x = a * planet->pos.x;
-    planet->a.y = a * planet->pos.y;
-    planet->a.z = a * planet->pos.z;
+    planet->a = multVectScal(planet->pos,a);
 
-    // Calcule de la position en t
+    // position en t
 
-    planet->pos.x += planet->v.x * pas;
-    planet->pos.y += planet->v.y * pas;
-    planet->pos.z += planet->v.z * pas;
+    planet->pos = sumVect(multVectScal(planet->v,pas),planet->pos);
 
-    // Calcule de la vitesse en t
+    // vitesse en t
 
-    planet->v.x += planet->a.x * pas;
-    planet->v.y += planet->a.y * pas;
-    planet->v.z += planet->a.z * pas;
+    planet->v = sumVect(multVectScal(planet->a, pas),planet->v);
 
 }
 
@@ -104,33 +123,24 @@ void eulerInteract(Planet * planets, int pas){
     for (int i = 0; i < N_PLANETS ; i++){
         a_list[i] = accelerationInteract(planets,i);
         a_sol = acceleration(planets[i]);
-        a_list[i].x += a_sol * planets[i].pos.x;
-        a_list[i].y += a_sol * planets[i].pos.y;
-        a_list[i].z += a_sol * planets[i].pos.z;
-
+        a_list[i] = sumVect(a_list[i], multVectScal(planets[i].pos,a_sol));
     }
 
     // Boucle ajout informations
     for (int i = 0 ; i < N_PLANETS ; i++){
         planet = &(planets[i]);
 
-        // Calcule de l'accélération à t-1
+        // accélération à t-1
     
-        planet->a.x = a_list[i].x ;
-        planet->a.y = a_list[i].y ;
-        planet->a.z = a_list[i].z ;
+        planet->a = a_list[i];
 
-        // Calcule de la position en t
+        // position en t
 
-        planet->pos.x += planet->v.x * pas;
-        planet->pos.y += planet->v.y * pas;
-        planet->pos.z += planet->v.z * pas;
+        planet->pos = sumVect(multVectScal(planet->v,pas),planet->pos);
 
-        // Calcule de la vitesse en t
+        //  vitesse en t
 
-        planet->v.x += planet->a.x * pas;
-        planet->v.y += planet->a.y * pas;
-        planet->v.z += planet->a.z * pas;
+        planet->v = sumVect(multVectScal(planet->a, pas),planet->v);
     }
 }
 
@@ -149,36 +159,28 @@ void eulerAsymInteract(Planet * planets, int pas){
     for (int i = 0 ; i < N_PLANETS ; i++){
         planet = &(planets[i]);
 
-        // Calcule de la position en t
+        //  position en t
 
-        planet->pos.x += planet->v.x * pas;
-        planet->pos.y += planet->v.y * pas;
-        planet->pos.z += planet->v.z * pas;
+        planet->pos = sumVect(multVectScal(planet->v,pas),planet->pos);
     }
 
     // Boucle accélérations
     for (int i = 0; i < N_PLANETS ; i++){
-            a_list[i] = accelerationInteract(planets,i);
-            a_sol = acceleration(planets[i]);
-            a_list[i].x += a_sol * planets[i].pos.x;
-            a_list[i].y += a_sol * planets[i].pos.y;
-            a_list[i].z += a_sol * planets[i].pos.z;
-    } 
+        a_list[i] = accelerationInteract(planets,i);
+        a_sol = acceleration(planets[i]);
+        a_list[i] = sumVect(a_list[i], multVectScal(planets[i].pos,a_sol));
+    }
 
     // Boucle ajout informations restantes
     for (int i = 0 ; i < N_PLANETS ; i++){  
+        planet = &(planets[i]);
+        // accélération à t-1
 
-        // Ajout de l'accélération à t-1
+        planet->a = a_list[i];
 
-        planet->a.x = a_list[i].x;
-        planet->a.y = a_list[i].y;
-        planet->a.z = a_list[i].z;
+        // vitesse en t
 
-        // Calcule de la vitesse en t
-
-        planet->v.x += planet->a.x * pas;
-        planet->v.y += planet->a.y * pas;
-        planet->v.z += planet->a.z * pas;
+        planet->v = sumVect(multVectScal(planet->a, pas),planet->v);
     }
 }
 
@@ -377,7 +379,7 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
     }
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
-    for (int i = 1; i < (S_TO_D/PAS_SAUVEGARDE) * jours; i++){
+    for (int i = 1; i < ( DAY_TO_SEC * jours) / PAS_SAUVEGARDE; i++){
         for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_REEL);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);

@@ -6,7 +6,6 @@
 <pre><code>{
     "planete_methode":[
         [[x,y,z],[vx,vy,vz],0],  
-        [[x,y,z],[vx,vy,vz],0],  
         [[x,y,z],[vx,vy,vz],1],
         ...
         [[x,y,z],[vx,vy,vz],t]

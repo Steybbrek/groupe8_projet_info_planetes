@@ -1,0 +1,52 @@
+{
+    "Sun" : {
+        "Name" : "Sun",
+        "Color" : "rgb(255, 255, 0)",
+        "Diametre" : 1392684
+    },
+    "mercure_eulerAsym" : {
+        "Name" : "Mercury",
+        "Color" : "rgb(128, 128, 128)",
+        "Diametre" : 4879
+    },
+    "venus_eulerAsym" : {
+        "Name" : "Venus",
+        "Color" : "rgb(128, 128, 128)",
+        "Diametre" : 12103
+    },
+    "terre_eulerAsym" : {
+        "Name" : "Earth",
+        "Color" :"rgb(0, 255, 0)",
+        "Diametre" : 12742
+    },
+    "lune_eulerAsym" : {
+        "Name" : "Moon",
+        "Color" : "rgb(200, 200, 200)",
+        "Diametre" : 3474
+    },
+    "mars_eulerAsym" : {
+        "Name" : "Mars",
+        "Color" : "rgb(255, 0, 0)",
+        "Diametre" : 6799
+    },
+    "jupiter_eulerAsym" : {
+        "Name" : "Jupiter",
+        "Color" : "rgb(255, 165, 0)",
+        "Diametre" : 139820
+    },
+    "saturne_eulerAsym" : {
+        "Name" : "Saturn",
+        "Color" : "rgb(210, 180, 140)",
+        "Diametre" : 116460
+    },
+    "uranus_eulerAsym" : {
+        "Name" : "Uranus",
+        "Color" : "rgb(173, 216, 230)",
+        "Diametre" : 50724
+    },
+    "neptune_eulerAsym" : {
+        "Name" : "Neptune",
+        "Color" : "rgb(0, 0, 255)",
+        "Diametre" : 49244
+    }
+}
