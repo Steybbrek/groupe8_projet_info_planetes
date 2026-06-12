@@ -38,6 +38,8 @@ void euler(Planet * planet);
 
 void eulerInteract(Planet * planets);
 
+void eulerAsymInteract(Planet * planets);
+
 Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz);
 
 Planet * reset(Planet * planets);
@@ -48,7 +50,7 @@ void saveFile(FILE * file, Planet planet, int t);
 
 void saveToMain(FILE * methodes, TempFILE * listeFiles);
 
-void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours);
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *));
 
 void exportFile(FILE * mainFile, FILE * fileToPush);
 

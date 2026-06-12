@@ -6,7 +6,9 @@ int main(){
     printf("[DEBUT DU PROGRAMME]\n\n");
 
     Planet * planets = NULL;
-    Planet temp_planet;
+    TempFILE * listTempFiles = malloc(N_PLANETS * sizeof(TempFILE));
+    FILE * methodes = fopen("../fichiers_json/methodes.json","w");
+    fprintf(methodes, "{\n");
     planets = reset(planets);
     
 
@@ -20,18 +22,34 @@ int main(){
     }
 
     // Euler Interact
-    TempFILE * listeEulerInteract = malloc(N_PLANETS * sizeof(TempFILE));
-    FILE * methodes = fopen("../fichiers_json/methodes.json","w");
-    fprintf(methodes, "{\n");
     
     planets = reset(planets);
-    listeEulerInteract = initFiles(listeEulerInteract,"eulerInteract");
+    listTempFiles = initFiles(listTempFiles,"euler");
     
-    eulerInteractTempFile(planets,listeEulerInteract,365.25);
+    createTempFiles(planets,listTempFiles,365.25,eulerInteract);
 
-    saveToMain(methodes, listeEulerInteract);
+    saveToMain(methodes, listTempFiles);
 
-    free(listeEulerInteract);
+    fprintf(methodes,",\n"); // Colle les listes
+    
+    // Euler Asymétrique
+    
+    planets = reset(planets);
+    listTempFiles = initFiles(listTempFiles,"eulerAsym");
+    
+    createTempFiles(planets,listTempFiles,365.25,eulerAsymInteract);
+
+    saveToMain(methodes, listTempFiles);
+
+
+
+
+
+
+
+    // End prog
+
+    free(listTempFiles);
 
     fprintf(methodes,"\n}");
 

@@ -81,7 +81,7 @@ void euler(Planet * planet){
 }
 
 /**
- * @brief Calcule 
+ * @brief Calcule les informations avec la méthode d'Euler et des intéraction entre planètes
  * @param planets Liste des planètes
  */
 void eulerInteract(Planet * planets){
@@ -94,7 +94,9 @@ void eulerInteract(Planet * planets){
 
     for (int i = 0 ; i < N_PLANETS ; i++){
         planet = &(planets[i]);
+
         // Calcule de l'accélération à t-1
+    
         planet->a.x = a_list[i] * planet->pos.x;
         planet->a.y = a_list[i] * planet->pos.y;
         planet->a.z = a_list[i] * planet->pos.z;
@@ -113,11 +115,44 @@ void eulerInteract(Planet * planets){
     }
 }
 
-void fRK(){
+/**
+ * @brief Calcule les informations avec la méthode d'Euler et des intéraction avec les autres planètes
+ * @param planets Liste des planètes
+ */
+void eulerAsymInteract(Planet * planets){
+    double a_list[N_PLANETS];
+    Planet * planet;
 
+    for (int i = 0; i < N_PLANETS ; i++){
+        a_list[i] = acceleration(planets[i]) + accelerationInteract(planets,i);
+    }
+
+    for (int i = 0 ; i < N_PLANETS ; i++){
+        planet = &(planets[i]);
+
+        // Calcule de la position en t
+
+        planet->pos.x += planet->v.x * T;
+        planet->pos.y += planet->v.y * T;
+        planet->pos.z += planet->v.z * T;
+
+        // Calcule de l'accélération à t-1
+
+        planet->a.x = a_list[i] * planet->pos.x;
+        planet->a.y = a_list[i] * planet->pos.y;
+        planet->a.z = a_list[i] * planet->pos.z;
+
+        // Calcule de la vitesse en t
+
+        planet->v.x += planet->a.x * T;
+        planet->v.y += planet->a.y * T;
+        planet->v.z += planet->a.z * T;
+    }
 }
 
-
+void fRK(){
+    //TODO : RK interact directe
+}
 
 /**
  * @brief Créer un struct planète et l'initialise
@@ -294,9 +329,9 @@ void saveToMain(FILE * methodes, TempFILE * listeFiles){
  * @param planet_list Liste des planètes
  * @param TempFILE Liste des fichiers temporaires
  * @param jours Nombre de jours à calculer
- * @note TODO: Ajouter un champ fonctions pour mettre directe la fonction voulue
+ * @param f Fonction à utiliser
  */
-void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jours){
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *)){
     Planet temp_planet;
 
     // boucle ajout des infos dans le bon format pour t = 0
@@ -307,7 +342,7 @@ void eulerInteractTempFile(Planet * planet_list, TempFILE * files_list, float jo
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
     for (int i = 1; i < (int)((S_TO_D/T) * jours); i++){
-        eulerInteract(planet_list);
+        f(planet_list);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }
