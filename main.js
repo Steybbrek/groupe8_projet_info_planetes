@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import {fetchJSONData, createPlanets, Planete} from "./loader.js";
-import {createScene, createCamera, createRenderer, createControls, createStars, createLight} from "./draw.js";
+import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "./draw.js";
 import {createRaycaster, onPointerMove, createPointer} from "./Collision.js"
 
 async function main() {
@@ -56,6 +57,7 @@ async function main() {
         scene.add(planet.mesh);
         let path = './3D_texture/' + planet.name + ".glb"
         planet.load_3D_model(path);
+        planets.forEach(planet => planet.createName())
         //Sun case
         const temp = planet.drawOrbite()
         if(temp != undefined) scene.add(planet.drawOrbite());
@@ -76,6 +78,9 @@ async function main() {
     const light = createLight()
     scene.add(light)
 
+    const labelRenderer = createTextRenderer()
+    document.body.appendChild(labelRenderer.domElement);
+
     let time = 0
     function animate(t) {
         requestAnimationFrame(animate);
@@ -93,7 +98,7 @@ async function main() {
             planets.forEach(planet => planet.update_position(document.getElementById('stage_value').textContent));
         }
         planets.forEach(planet => planet.update_rotation(t));
-
+        planets.forEach(planet => planet.update_name())
         const meshesPlanetes = planets.map(p => p.mesh);
         raycaster.setFromCamera(pointer, camera)
         const intersects = raycaster.intersectObjects(meshesPlanetes, false);
@@ -103,6 +108,7 @@ async function main() {
             console.log(intersects[0].object)
         }
 
+        labelRenderer.render(scene, camera);
         renderer.render(scene, camera);
         controls.update();
         time += 1

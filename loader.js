@@ -102,6 +102,25 @@ class Planete {
             this.mesh.add(modele3D);
         })
     }
+
+    createName() {
+        const label_name = document.createElement('div');
+        label_name.className = 'planet-name';
+        label_name.textContent = this.name;
+        
+        label_name.style.color = 'white';
+        label_name.style.fontFamily = 'sans-serif';
+        label_name.style.fontSize = '12px';
+        label_name.style.marginTop = '-1em';
+
+        this.label = new CSS2DObject(label_name);
+        this.label.position.set(0, this.diametre / 1e7, 0); 
+        this.mesh.add(this.label);
+    }
+
+    update_name() {
+        this.label.position.set(0, this.diametre / 1e7, 0); 
+    }
 }
 
 function fetchJSONData(url) {
