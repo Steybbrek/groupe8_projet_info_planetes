@@ -7,7 +7,7 @@ int main(){
 
     Planet * planets = NULL;
     TempFILE * listTempFiles = malloc(N_PLANETS * sizeof(TempFILE));
-    FILE * methodes = fopen("../fichiers_json/methodes.json","w");
+    FILE * methodes = fopen("../web/methodes.json","w");
     fprintf(methodes, "{\n");
     planets = reset(planets);
     

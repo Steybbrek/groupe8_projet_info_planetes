@@ -100,23 +100,25 @@ void eulerInteract(Planet * planets, int pas){
     Planet * planet;
     double a_sol;
 
+    // Boucle accélérations
     for (int i = 0; i < N_PLANETS ; i++){
         a_list[i] = accelerationInteract(planets,i);
         a_sol = acceleration(planets[i]);
-        a_list[i].x += a_sol;
-        a_list[i].y += a_sol;
-        a_list[i].z += a_sol;
+        a_list[i].x += a_sol * planets[i].pos.x;
+        a_list[i].y += a_sol * planets[i].pos.y;
+        a_list[i].z += a_sol * planets[i].pos.z;
 
     }
 
+    // Boucle ajout informations
     for (int i = 0 ; i < N_PLANETS ; i++){
         planet = &(planets[i]);
 
         // Calcule de l'accélération à t-1
     
-        planet->a.x = a_list[i].x * planet->pos.x;
-        planet->a.y = a_list[i].y * planet->pos.y;
-        planet->a.z = a_list[i].z * planet->pos.z;
+        planet->a.x = a_list[i].x ;
+        planet->a.y = a_list[i].y ;
+        planet->a.z = a_list[i].z ;
 
         // Calcule de la position en t
 
@@ -142,15 +144,8 @@ void eulerAsymInteract(Planet * planets, int pas){
     Planet * planet;
     double a_sol;
 
-    for (int i = 0; i < N_PLANETS ; i++){
-        a_list[i] = accelerationInteract(planets,i);
-        a_sol = acceleration(planets[i]);
-        a_list[i].x += a_sol;
-        a_list[i].y += a_sol;
-        a_list[i].z += a_sol;
 
-    }
-
+    // Boucle ajout informations positions
     for (int i = 0 ; i < N_PLANETS ; i++){
         planet = &(planets[i]);
 
@@ -159,12 +154,25 @@ void eulerAsymInteract(Planet * planets, int pas){
         planet->pos.x += planet->v.x * pas;
         planet->pos.y += planet->v.y * pas;
         planet->pos.z += planet->v.z * pas;
+    }
 
-        // Calcule de l'accélération à t-1
+    // Boucle accélérations
+    for (int i = 0; i < N_PLANETS ; i++){
+            a_list[i] = accelerationInteract(planets,i);
+            a_sol = acceleration(planets[i]);
+            a_list[i].x += a_sol * planets[i].pos.x;
+            a_list[i].y += a_sol * planets[i].pos.y;
+            a_list[i].z += a_sol * planets[i].pos.z;
+    } 
 
-        planet->a.x = a_list[i].x * planet->pos.x;
-        planet->a.y = a_list[i].y * planet->pos.y;
-        planet->a.z = a_list[i].z * planet->pos.z;
+    // Boucle ajout informations restantes
+    for (int i = 0 ; i < N_PLANETS ; i++){  
+
+        // Ajout de l'accélération à t-1
+
+        planet->a.x = a_list[i].x;
+        planet->a.y = a_list[i].y;
+        planet->a.z = a_list[i].z;
 
         // Calcule de la vitesse en t
 
