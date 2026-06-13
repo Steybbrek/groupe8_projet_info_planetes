@@ -63,11 +63,11 @@ double acceleration(Planet planet){
 }
 
 /**
- * @brief Calcule les forces appliquer sur l'objet par les autres planètes
+ * @brief Calcule les forces appliquer sur l'objet par les autres objets
  * @param planets Liste des planètes
  * @param id_target Id de la planète que l'on étudie
  */
-Vect accelerationInteract(Planet *planets, char id_target){
+Vect accelerationInteract(Planet *planets, int id_target){
     Vect a;
     Vect r;
     a.x = 0;
@@ -75,15 +75,24 @@ Vect accelerationInteract(Planet *planets, char id_target){
     a.z = 0;
     double norme_r;
     double force;
+
     for (int i = 0 ; i < N_PLANETS ; i++){
         if (i != id_target){
-            r = combVect(planets[i].pos,planets[id_target].pos);
+            r = combVect(planets[id_target].pos,planets[i].pos);
             norme_r = norme(r);
             force = (-G * planets[i].m / (norme_r * norme_r * norme_r));
 
             a = sumVect(a, multVectScal(r,force));
         }
     }
+
+    //Soleil
+
+    r = planets[id_target].pos;
+    norme_r = norme(r);
+    force = (-G * mS / (norme_r * norme_r * norme_r));
+    a = sumVect(a, multVectScal(r,force));
+
     return a;
 }
 
@@ -122,8 +131,6 @@ void eulerInteract(Planet * planets, int pas){
     // Boucle accélérations
     for (int i = 0; i < N_PLANETS ; i++){
         a_list[i] = accelerationInteract(planets,i);
-        a_sol = acceleration(planets[i]);
-        a_list[i] = sumVect(a_list[i], multVectScal(planets[i].pos,a_sol));
     }
 
     // Boucle ajout informations
@@ -167,8 +174,6 @@ void eulerAsymInteract(Planet * planets, int pas){
     // Boucle accélérations
     for (int i = 0; i < N_PLANETS ; i++){
         a_list[i] = accelerationInteract(planets,i);
-        a_sol = acceleration(planets[i]);
-        a_list[i] = sumVect(a_list[i], multVectScal(planets[i].pos,a_sol));
     }
 
     // Boucle ajout informations restantes
@@ -184,9 +189,19 @@ void eulerAsymInteract(Planet * planets, int pas){
     }
 }
 
+KList k1(Planet * planets){
+    KList k1;
+    Vect a;
+    for (int i = 0; i < N_PLANETS; i++) {
+        k1.pos[i] = planets[i].a;
+        k1.v[i] = accelerationInteract(planets, i);
+    }
+}
+
 /**
- * @brief Fonction RK
- * @param
+ * @brief Fonction RK de niveau(?) 4
+ * @param planets Liste des planetes
+ * @param pas Le pas (en sec)
  */
 void rk4(Planet * planets, int pas){
     double h = (double)pas;
@@ -203,10 +218,7 @@ void rk4(Planet * planets, int pas){
     // --- k1 : dérivées à t ---
     for (int i = 0; i < N_PLANETS; i++) {
         k1_pos[i] = planets[i].v;
-        k1_vel[i] = sumVect(
-            multVectScal(planets[i].pos, acceleration(planets[i])),
-            accelerationInteract(planets, i)
-        );
+        k1_vel[i] = accelerationInteract(planets, i);
     }
 
     // --- k2 : dérivées à t + h/2 avec k1 ---
@@ -217,10 +229,7 @@ void rk4(Planet * planets, int pas){
     }
     for (int i = 0; i < N_PLANETS; i++) {
         k2_pos[i] = temp[i].v;
-        k2_vel[i] = sumVect(
-            multVectScal(temp[i].pos, acceleration(temp[i])),
-            accelerationInteract(temp, i)
-        );
+        k2_vel[i] = accelerationInteract(temp, i);
     }
 
     // --- k3 : dérivées à t + h/2 avec k2 ---
@@ -231,10 +240,7 @@ void rk4(Planet * planets, int pas){
     }
     for (int i = 0; i < N_PLANETS; i++) {
         k3_pos[i] = temp[i].v;
-        k3_vel[i] = sumVect(
-            multVectScal(temp[i].pos, acceleration(temp[i])),
-            accelerationInteract(temp, i)
-        );
+        k3_vel[i] = accelerationInteract(temp, i);
     }
 
     // --- k4 : dérivées à t + h avec k3 ---
@@ -245,10 +251,7 @@ void rk4(Planet * planets, int pas){
     }
     for (int i = 0; i < N_PLANETS; i++) {
         k4_pos[i] = temp[i].v;
-        k4_vel[i] = sumVect(
-            multVectScal(temp[i].pos, acceleration(temp[i])),
-            accelerationInteract(temp, i)
-        );
+        k4_vel[i] = accelerationInteract(temp, i);
     }
 
     // --- Mise à jour finale ---
@@ -468,13 +471,6 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
     }
 }
 
-void debugLune(Planet * planets, int jour){
-    double dx = planets[8].pos.x - planets[2].pos.x;
-    double dy = planets[8].pos.y - planets[2].pos.y;
-    double dz = planets[8].pos.z - planets[2].pos.z;
-    double dist = sqrt(dx*dx + dy*dy + dz*dz) / 1e3;
-    printf("Jour %4d | dist T-L = %8.0f km\n", jour, dist);
-}
 
 /**
  * @brief Copie le contenue d'un fichier dans un autre (cat)

@@ -23,7 +23,7 @@ int main(){
 
     // Euler Interact
     
-    printf("\n[DEBUT] - Euler\n");
+    /* printf("\n[DEBUT] - Euler\n");
 
     planets = reset(planets);
     listTempFiles = initFiles(listTempFiles,"euler");
@@ -49,21 +49,21 @@ int main(){
 
     fprintf(methodes,",\n"); // Colle les listes
 
-    printf("[ FIN ] - Euler Asymétrique\n");
+    printf("[ FIN ] - Euler Asymétrique\n"); */
 
     // R-K4
     
     printf("\n[DEBUT] - R-K 4\n");
 
     planets = reset(planets);
+    
     listTempFiles = initFiles(listTempFiles,"RK4");
     
     createTempFiles(planets,listTempFiles,PERIODE_ENREGISTREMENT,rk4);
 
     saveToMain(methodes, listTempFiles);
-
+    
     printf("[ FIN ] - R-K 4\n");
-
 
 
 

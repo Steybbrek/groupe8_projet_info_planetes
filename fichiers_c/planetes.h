@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #define N_PLANETS 9
 #define G 6.67408e-11
-#define PAS_REEL                     10000           // fréquence des calcules (sec)
+#define PAS_REEL                     60           // fréquence des calcules (sec)
 #define PAS_SAUVEGARDE               86400           // fréquence de sauvegarde (sec)
-#define PERIODE_ENREGISTREMENT       3652.5           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
+#define PERIODE_ENREGISTREMENT       365.25           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define DAY_TO_SEC 86400        // jour en secs
 #define mS 1.989e30
 
@@ -26,6 +26,11 @@ typedef struct s_temp_file{
     char path[256];
 }TempFILE;
 
+typedef struct s_k_liste{
+    Vect pos[N_PLANETS];
+    Vect v[N_PLANETS];
+}KList;
+
 
 
 double norme(Vect vecteur);
@@ -38,7 +43,7 @@ Vect multVectScal(Vect vecteur, double scalaire);
 
 double acceleration(Planet planet);
 
-Vect accelerationInteract(Planet *planets, char id_target);
+Vect accelerationInteract(Planet *planets, int id_target);
 
 void euler(Planet * planet, int pas);
 
@@ -63,5 +68,3 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
 void exportFile(FILE * mainFile, FILE * fileToPush);
 
 void print_debug(Planet planet, int t);
-
-void debugLune(Planet * planets, int jour);

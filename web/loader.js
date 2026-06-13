@@ -11,11 +11,11 @@ class Planete {
         this.diametre = data["Diametre"];
         this.color = data["Color"]
         this.position = position
-        if(this.diametre / 1e6 > 0.1) {
+        if(this.diametre / 1e6 > 0.001) {
             this.geo = new THREE.SphereGeometry(this.diametre / this.scale_taille, 32, 32);
         }
         else {
-        this.geo = new THREE.SphereGeometry(0.1, 32, 32);
+        this.geo = new THREE.SphereGeometry(0.001, 32, 32);
         }
         this.mat = new THREE.MeshBasicMaterial({
             color: this.color.toString()
@@ -33,7 +33,7 @@ class Planete {
     }
 
     update_position(i) {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             const x = this.position[i][0][0] / this.scale_distance;
             const y = this.position[i][0][1] / this.scale_distance;
             const z = this.position[i][0][2] / this.scale_distance;
@@ -42,7 +42,7 @@ class Planete {
     }
 
     interpolation(start, end, frame, frametonext) {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             let vector_start = new THREE.Vector3(
                 this.position[start][0][0] / this.scale_distance,
                 this.position[start][0][1] / this.scale_distance,
@@ -60,7 +60,7 @@ class Planete {
     }
 
     drawOrbite() {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             let points = []
             this.position.forEach(pos => {
                 let point_position = new THREE.Vector3
@@ -91,7 +91,7 @@ class Planete {
             console.log(tailleActuelle)
             let tailleCible = this.diametre / this.scale_taille;
             console.log(tailleCible)
-            if (tailleCible < 0.1) {
+            if (tailleCible < 0.001) {
                 tailleCible = 1;
             }
             console.log(tailleCible)
@@ -101,6 +101,25 @@ class Planete {
             this.mat.visible = false;
             this.mesh.add(modele3D);
         })
+    }
+
+    createName() {
+        const label_name = document.createElement('div');
+        label_name.className = 'planet-name';
+        label_name.textContent = this.name;
+        
+        label_name.style.color = 'white';
+        label_name.style.fontFamily = 'sans-serif';
+        label_name.style.fontSize = '12px';
+        label_name.style.marginTop = '-1em';
+
+        this.label = new CSS2DObject(label_name);
+        this.label.position.set(0, this.diametre / 1e7, 0); 
+        this.mesh.add(this.label);
+    }
+
+    update_name() {
+        this.label.position.set(0, this.diametre / 1e7, 0); 
     }
 }
 
@@ -117,8 +136,8 @@ function fetchJSONData(url) {
 function createPlanets(data_pos, data_info) {
     let planets = [];
     for (var planete_name in data_info) {
-        if (planete_name != "Sun") { planets.push(new Planete(data_info[planete_name], data_pos[planete_name]));}
-        else{ planets.push(new Planete(data_info["Sun"], [[0,0,0]])) }
+        if (planete_name != "Soleil") { planets.push(new Planete(data_info[planete_name], data_pos[planete_name]));}
+        else{ planets.push(new Planete(data_info["Soleil"], [[0,0,0]])) }
     }
     return planets;
 }

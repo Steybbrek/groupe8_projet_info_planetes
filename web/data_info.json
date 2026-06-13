@@ -1,11 +1,11 @@
 {
-    "Sun" : {
-        "Name" : "Sun",
+    "Soleil" : {
+        "Name" : "Soleil",
         "Color" : "rgb(255, 255, 0)",
         "Diametre" : 1392684
     },
     "mercure_RK4" : {
-        "Name" : "Mercury",
+        "Name" : "Mercure",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 4879
     },
@@ -15,12 +15,12 @@
         "Diametre" : 12103
     },
     "terre_RK4" : {
-        "Name" : "Earth",
+        "Name" : "Terre",
         "Color" :"rgb(0, 255, 0)",
         "Diametre" : 12742
     },
     "lune_RK4" : {
-        "Name" : "Moon",
+        "Name" : "Lune",
         "Color" : "rgb(200, 200, 200)",
         "Diametre" : 3474
     },
@@ -35,7 +35,7 @@
         "Diametre" : 139820
     },
     "saturne_RK4" : {
-        "Name" : "Saturn",
+        "Name" : "Saturne",
         "Color" : "rgb(210, 180, 140)",
         "Diametre" : 116460
     },
