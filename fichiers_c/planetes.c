@@ -4,6 +4,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+/*
+###############################################################################################################
+################################################# OUTILS VECT #################################################
+###############################################################################################################
+*/
+
+
 
 /**
  * @brief Renvoie la norme
@@ -24,6 +31,22 @@ Vect sumVect(Vect u, Vect v){
     sum.x = u.x + v.x;
     sum.y = u.y + v.y;
     sum.z = u.z + v.z;
+    return sum;
+}
+
+/**
+ * @brief Somme de vecteurs (au moins 1 vect)
+ * @param list_vect Liste des vecteurs
+ * @param n Nombre de vecteurs
+ * @return Somme des vecteurs
+ */
+Vect sumListVect(Vect * list_vect, int n){
+    Vect sum = list_vect[0];
+    for (int i = 1; i < n ; i++){
+        sum.x += list_vect[i].x;
+        sum.y += list_vect[i].y;
+        sum.z += list_vect[i].z;
+    }
     return sum;
 }
 
@@ -52,6 +75,14 @@ Vect multVectScal(Vect vecteur, double scalaire){
     vecteur.z *= scalaire;
     return vecteur;
 }
+
+
+/*
+###############################################################################################################
+################################################ ACCELERATIONS ################################################
+###############################################################################################################
+*/
+
 
 /**
  * @brief Calcule la variable à multiplier par l'accélération en x, y et z
@@ -95,6 +126,15 @@ Vect accelerationInteract(Planet *planets, int id_target){
 
     return a;
 }
+
+
+/*
+###############################################################################################################
+################################################## METHODES ###################################################
+###############################################################################################################
+*/
+
+// Méthodes euler
 
 /**
  * @brief Calcule les informations d'une planète après pas secondes
@@ -189,13 +229,88 @@ void eulerAsymInteract(Planet * planets, int pas){
     }
 }
 
-KList k1(Planet * planets){
-    KList k1;
-    Vect a;
-    for (int i = 0; i < N_PLANETS; i++) {
-        k1.pos[i] = planets[i].a;
-        k1.v[i] = accelerationInteract(planets, i);
+// Méthode RK
+
+/**
+ * @brief La fonction f de la méthode RK (f(pos,v) ~= a)
+ * @param planets Liste des planètes
+ * @return Liste des k
+ */
+KList fRK(Planet * planets){
+    KList k;
+    k.vect = malloc(N_PLANETS*sizeof(Vect)); //si je fais pas ça, ça plante
+    for (int i = 0 ; i < N_PLANETS ; i++){
+        k.vect[i] = accelerationInteract(planets, i);
     }
+    return k;
+}
+
+/**
+ * @brief Calcule de K1 de la méthode RK
+ * @param planets Liste des planètes
+ * @return Liste des k1
+ */
+KList calcK1(Planet * planets){
+    return fRK(planets);
+}
+
+/**
+ * @brief Calcule de K2 de la méthode RK
+ * @param planets Liste des planètes
+ * @param k1 K précédent
+ * @param h intervalle
+ * @return Liste des k2
+ */
+KList calcK2(Planet * planets, KList k1, double h){
+    Planet planetus[N_PLANETS];
+    for (int i = 0 ; i < N_PLANETS; i++) {
+        planetus[i] = planets[i];
+        // pos + v x h/2
+        planetus[i].pos = sumVect(planets[i].pos, multVectScal(planets[i].v, h/2.0));
+        // v + k1 x h/2
+        planetus[i].v = sumVect(planets[i].v, multVectScal(k1.vect[i], h/2.0));
+    }
+    return fRK(planetus);
+}
+
+/**
+ * @brief Calcule de K3 de la méthode RK
+ * @param planets Liste des planètes
+ * @param k1 K précédent le précéndent (précent² ?)
+ * @param k2 K précédent
+ * @param h intervalle
+ * @return Liste des k3
+ */
+KList calcK3(Planet * planets, KList k1, KList k2, double h){
+    Planet planetos[N_PLANETS];
+    for (int i = 0 ; i < N_PLANETS; i++) {
+        planetos[i] = planets[i];
+        // pos + h/2 x v + k1 x h²/4
+        planetos[i].pos = sumVect(planets[i].pos, sumVect(multVectScal(planets[i].v, h/2.0), multVectScal(k1.vect[i], h*h/4.0)));
+        // v + h/1 x k2
+        planetos[i].v = sumVect(planets[i].v, multVectScal(k2.vect[i], h/2.0));
+    }
+    return fRK(planetos);
+}
+
+/**
+ * @brief Calcule de K4 de la méthode RK
+ * @param planets Liste des planètes
+ * @param k2 K précédent le précéndent (précent² ?)
+ * @param k3 K précédent
+ * @param h intervalle
+ * @return Liste des k4
+ */
+KList calcK4(Planet * planets, KList k2, KList k3, double h){
+    Planet planetis[N_PLANETS];
+    for (int i = 0; i < N_PLANETS; i++) {
+        planetis[i] = planets[i];
+        // pos + h x v + h²/2 x k2
+        planetis[i].pos = sumVect(planets[i].pos, sumVect(multVectScal(planets[i].v, h), multVectScal(k2.vect[i], h*h/2.0)));
+        // v + h x k3
+        planetis[i].v = sumVect(planets[i].v, multVectScal(k3.vect[i], h));
+    }
+    return fRK(planetis);
 }
 
 /**
@@ -205,71 +320,39 @@ KList k1(Planet * planets){
  */
 void rk4(Planet * planets, int pas){
     double h = (double)pas;
+    
+    // K1 à k4 pour pouvoir respirer
 
-    // Stockage des k pour chaque planète
-    Vect k1_pos[N_PLANETS], k1_vel[N_PLANETS];
-    Vect k2_pos[N_PLANETS], k2_vel[N_PLANETS];
-    Vect k3_pos[N_PLANETS], k3_vel[N_PLANETS];
-    Vect k4_pos[N_PLANETS], k4_vel[N_PLANETS];
+    KList k1 = calcK1(planets);
+    KList k2 = calcK2(planets, k1, h);
+    KList k3 = calcK3(planets, k1, k2, h);
+    KList k4 = calcK4(planets, k2, k3, h);
 
-    // Planètes temporaires pour évaluer a() à différents points
-    Planet temp[N_PLANETS];
+    // pas très beau mais application de la formule finale
+    for (int i = 0; i < N_PLANETS; i++) {
+        // k1 à k3 pour la position des objets
+        Vect kPos[3] = {k1.vect[i], k2.vect[i], k3.vect[i]};
+        // k1, 2k2, 2k3 et k4 pour la vitesse des objets
+        Vect kV[6] = {k1.vect[i], k2.vect[i], k2.vect[i], k3.vect[i], k3.vect[i], k4.vect[i]};
 
-    // --- k1 : dérivées à t ---
-    for (int i = 0; i < N_PLANETS; i++) {
-        k1_pos[i] = planets[i].v;
-        k1_vel[i] = accelerationInteract(planets, i);
+        // pos + h x v + (h²/6) x (k1 + k2 + k3)
+        planets[i].pos = sumVect(planets[i].pos, sumVect(multVectScal(planets[i].v, h), multVectScal(sumListVect(kPos, 3), h*h / 6.0)));
+        // v + (h/6) x (k1 + 2 x k2 + 2 x k3 + k4)
+        planets[i].v   = sumVect(planets[i].v, multVectScal(sumListVect(kV, 6), h / 6.0));
     }
-
-    // --- k2 : dérivées à t + h/2 avec k1 ---
-    for (int i = 0; i < N_PLANETS; i++) {
-        temp[i] = planets[i];
-        temp[i].pos = sumVect(planets[i].pos, multVectScal(k1_pos[i], h/2));
-        temp[i].v   = sumVect(planets[i].v,   multVectScal(k1_vel[i], h/2));
-    }
-    for (int i = 0; i < N_PLANETS; i++) {
-        k2_pos[i] = temp[i].v;
-        k2_vel[i] = accelerationInteract(temp, i);
-    }
-
-    // --- k3 : dérivées à t + h/2 avec k2 ---
-    for (int i = 0; i < N_PLANETS; i++) {
-        temp[i] = planets[i];
-        temp[i].pos = sumVect(planets[i].pos, multVectScal(k2_pos[i], h/2));
-        temp[i].v   = sumVect(planets[i].v,   multVectScal(k2_vel[i], h/2));
-    }
-    for (int i = 0; i < N_PLANETS; i++) {
-        k3_pos[i] = temp[i].v;
-        k3_vel[i] = accelerationInteract(temp, i);
-    }
-
-    // --- k4 : dérivées à t + h avec k3 ---
-    for (int i = 0; i < N_PLANETS; i++) {
-        temp[i] = planets[i];
-        temp[i].pos = sumVect(planets[i].pos, multVectScal(k3_pos[i], h));
-        temp[i].v   = sumVect(planets[i].v,   multVectScal(k3_vel[i], h));
-    }
-    for (int i = 0; i < N_PLANETS; i++) {
-        k4_pos[i] = temp[i].v;
-        k4_vel[i] = accelerationInteract(temp, i);
-    }
-
-    // --- Mise à jour finale ---
-    for (int i = 0; i < N_PLANETS; i++) {
-        planets[i].pos = sumVect(planets[i].pos, multVectScal(
-            sumVect(k1_pos[i], sumVect(
-                multVectScal(k2_pos[i], 2),
-                sumVect(multVectScal(k3_pos[i], 2), k4_pos[i])
-            )), h/6
-        ));
-        planets[i].v = sumVect(planets[i].v, multVectScal(
-            sumVect(k1_vel[i], sumVect(
-                multVectScal(k2_vel[i], 2),
-                sumVect(multVectScal(k3_vel[i], 2), k4_vel[i])
-            )), h/6
-        ));
-    }
+    free(k1.vect);
+    free(k2.vect);
+    free(k3.vect);
+    free(k4.vect);
 }
+
+
+/*
+###############################################################################################################
+############################################### OUTILS PLANETES ###############################################
+###############################################################################################################
+*/
+
 
 /**
  * @brief Créer un struct planète et l'initialise
@@ -314,6 +397,10 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
  */
 Planet * reset(Planet * planets){
     planets = realloc(planets,sizeof(Planet)*N_PLANETS);
+    if(planets == NULL){
+        fprintf(stderr, "Realoc pb reset\n");
+        exit(EXIT_FAILURE);
+    }
     // Mercure
     planets[0] = initPlanet(3.302e23, -5.939249500394277e+10, -1.424142594711035e+10, 4.338754675023021e+09, 6.939545151869151e+02, -4.540444941343805e+04, -3.773696839065323e+03); 
     // Venus
@@ -336,6 +423,14 @@ Planet * reset(Planet * planets){
     return planets;
 }
 
+
+/*
+###############################################################################################################
+############################################### OUTILS FICHIERS ###############################################
+###############################################################################################################
+*/
+
+
 /**
  * @brief Créer une liste  de fichiers json pour sauvegarder les données de chaque planète (également lisibles)
  * @param files L'adresse de la liste d'adresse de fichiers
@@ -345,7 +440,10 @@ Planet * reset(Planet * planets){
  */
 TempFILE * initFiles(TempFILE * files, char * prefixe){
     files = realloc(files, N_PLANETS * sizeof(TempFILE));
-
+    if (files == NULL){
+        fprintf(stderr, "initFiles realloc error\n");
+        exit(EXIT_FAILURE);
+    }
     // Mercure
     strcpy(files[0].path,"./temp_json_files/");
     strcat(files[0].path, prefixe);
@@ -471,7 +569,6 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
     }
 }
 
-
 /**
  * @brief Copie le contenue d'un fichier dans un autre (cat)
  * @param mainFile Fichier destination
@@ -487,6 +584,14 @@ void exportFile(FILE * mainFile, FILE * fileToPush){
         c[0] = fgetc(fileToPush);
     }
 }
+
+
+/*
+###############################################################################################################
+############################################ UNIQUE FONCTION DEBUG ############################################
+###############################################################################################################
+*/
+
 
 /**
  * @brief Affiche les infos de la planète au même format que le fichier json

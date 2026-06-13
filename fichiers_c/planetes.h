@@ -27,8 +27,7 @@ typedef struct s_temp_file{
 }TempFILE;
 
 typedef struct s_k_liste{
-    Vect pos[N_PLANETS];
-    Vect v[N_PLANETS];
+    Vect * vect;
 }KList;
 
 
@@ -50,6 +49,16 @@ void euler(Planet * planet, int pas);
 void eulerInteract(Planet * planets, int pas);
 
 void eulerAsymInteract(Planet * planets, int pas);
+
+KList fRK(Planet * planets);
+
+KList calcK1(Planet * planets);
+
+KList calcK2(Planet * planets, KList k1, double h);
+
+KList calcK3(Planet * planets, KList k1, KList k2, double h);
+
+KList calcK4(Planet * planets, KList k2, KList k3, double h);
 
 void rk4(Planet * planets, int pas);
 
