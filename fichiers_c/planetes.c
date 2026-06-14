@@ -1,8 +1,18 @@
+/**
+ * @file planetes.c
+ * @brief Un ensemble de fonctions pour estimer les trajectiores d'objets dans l'espace
+ * @authors SALMON RADENAC Théo, LAMOUR Briec
+ * @date 2026-06-14
+ */
+
+// LIBRAIRIES
+
 #include "planetes.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 
 /*
 ###############################################################################################################
@@ -134,7 +144,7 @@ Vect accelerationInteract(Planet *planets, int id_target){
 ###############################################################################################################
 */
 
-// Méthodes euler
+// Méthodes Euler
 
 /**
  * @brief Calcule les informations d'une planète après pas secondes
@@ -398,9 +408,12 @@ Planet initPlanet(double m, double x, double y , double z, double vx, double vy,
 Planet * reset(Planet * planets){
     planets = realloc(planets,sizeof(Planet)*N_PLANETS);
     if(planets == NULL){
-        fprintf(stderr, "Realoc pb reset\n");
+        fprintf(stderr, "ERROR : \n    - TYPE : Realoc returned NULL pointer \n    - LOCATION : Function reset\n");
         exit(EXIT_FAILURE);
     }
+
+    // Pas très beau mais écriture planète par planète des coordonées du vecteur position et des coordonées du vecteur vitesse
+
     // Mercure
     planets[0] = initPlanet(3.302e23, -5.939249500394277e+10, -1.424142594711035e+10, 4.338754675023021e+09, 6.939545151869151e+02, -4.540444941343805e+04, -3.773696839065323e+03); 
     // Venus
@@ -419,6 +432,8 @@ Planet * reset(Planet * planets){
     planets[7] = initPlanet(102.409e24, 4.465925471043573e+12, 1.523616015850787e+11, -1.060594799610975e+11, -2.218508272557781e+02, 5.464150567074379e+03, -1.069683757738009e+02); 
     // Lune
     planets[8] = initPlanet(7.349e22, -2.945076249617782e+10, -1.497169462776675e+11, 4.465133798880875e+07, 2.852887058558411e+04, -4.897018941321519e+03, 6.958124137372379e+01); 
+    // ISS
+    planets[9] = initPlanet(419725, -2.982903523315109e+10, -1.497698714434876e+11, 2.345805620402843e+07, 2.822503745211845e+04, -1.273456892933756e+04, -3.452720231090118e+03);
     
     return planets;
 }
@@ -430,6 +445,24 @@ Planet * reset(Planet * planets){
 ###############################################################################################################
 */
 
+/**
+ * @brief Initialise un fichier json temporaire pour le stockage de valeurs
+ * @param p_files Pointeur sur TempFILE
+ * @param prefixe Le prefixe / la méthode dans le nom de fichier
+ * @param name Le nom de la planète / de l'objet
+ * @note Nombre d'essaies pour créer la fonction : 1
+ */
+void initiateFileData(TempFILE * p_file, char * prefixe, char * name){
+    // fichier json => ./temp_json_files/prefixe_name.json
+    strcpy(p_file->path,"./temp_json_files/");
+    strcat(p_file->path, prefixe);
+    strcat(p_file->path,"_");
+    strcat(p_file->path, name);
+    strcat(p_file->path, ".json");
+    p_file->file = fopen(p_file->path,"w+");
+    // "name_prefixe": <= début fichier json
+    fprintf(p_file->file,"    \"%s_%s\":",name,prefixe);
+}
 
 /**
  * @brief Créer une liste  de fichiers json pour sauvegarder les données de chaque planète (également lisibles)
@@ -441,71 +474,29 @@ Planet * reset(Planet * planets){
 TempFILE * initFiles(TempFILE * files, char * prefixe){
     files = realloc(files, N_PLANETS * sizeof(TempFILE));
     if (files == NULL){
-        fprintf(stderr, "initFiles realloc error\n");
+        fprintf(stderr, "ERROR : \n    - TYPE : Realoc returned NULL pointer \n    - LOCATION : Function initFiles\n");
         exit(EXIT_FAILURE);
     }
-    // Mercure
-    strcpy(files[0].path,"./temp_json_files/");
-    strcat(files[0].path, prefixe);
-    strcat(files[0].path,"_mercure.json");
-    files[0].file = fopen(files[0].path,"w+");
-    fprintf(files[0].file,"    \"%s%s\":","mercure_",prefixe);
 
-    // Venus
-    strcpy(files[1].path,"./temp_json_files/");
-    strcat(files[1].path, prefixe);
-    strcat(files[1].path,"_venus.json");
-    files[1].file = fopen(files[1].path,"w+");
-    fprintf(files[1].file,"    \"%s%s\":","venus_",prefixe);
+    initiateFileData(&files[0], prefixe, "mercure");
 
-    // Terre
-    strcpy(files[2].path,"./temp_json_files/");
-    strcat(files[2].path, prefixe);
-    strcat(files[2].path,"_terre.json");
-    files[2].file = fopen(files[2].path,"w+");
-    fprintf(files[2].file,"    \"%s%s\":","terre_",prefixe);
+    initiateFileData(&files[1], prefixe, "venus");
+    
+    initiateFileData(&files[2], prefixe, "terre");
 
-    // Mars
-    strcpy(files[3].path,"./temp_json_files/");
-    strcat(files[3].path, prefixe);
-    strcat(files[3].path,"_mars.json");
-    files[3].file = fopen(files[3].path,"w+");
-    fprintf(files[3].file,"    \"%s%s\":","mars_",prefixe);
+    initiateFileData(&files[3], prefixe, "mars");
 
-    // Jupiter
-    strcpy(files[4].path,"./temp_json_files/");
-    strcat(files[4].path, prefixe);
-    strcat(files[4].path,"_jupiter.json");
-    files[4].file = fopen(files[4].path,"w+");
-    fprintf(files[4].file,"    \"%s%s\":","jupiter_",prefixe);
+    initiateFileData(&files[4], prefixe, "jupiter");
 
-    // Saturne
-    strcpy(files[5].path,"./temp_json_files/");
-    strcat(files[5].path, prefixe);
-    strcat(files[5].path,"_saturne.json");
-    files[5].file = fopen(files[5].path,"w+");
-    fprintf(files[5].file,"    \"%s%s\":","saturne_",prefixe);
+    initiateFileData(&files[5], prefixe, "saturne");
 
-    // Uranus
-    strcpy(files[6].path,"./temp_json_files/");
-    strcat(files[6].path, prefixe);
-    strcat(files[6].path,"_uranus.json");
-    files[6].file = fopen(files[6].path,"w+");
-    fprintf(files[6].file,"    \"%s%s\":","uranus_",prefixe);
+    initiateFileData(&files[6], prefixe, "uranus");
 
-    // Neptune
-    strcpy(files[7].path,"./temp_json_files/");
-    strcat(files[7].path, prefixe);
-    strcat(files[7].path,"_neptune.json");
-    files[7].file = fopen(files[7].path,"w+");
-    fprintf(files[7].file,"    \"%s%s\":","neptune_",prefixe);
+    initiateFileData(&files[7], prefixe, "neptune");
 
-    // Lune
-    strcpy(files[8].path,"./temp_json_files/");
-    strcat(files[8].path, prefixe);
-    strcat(files[8].path,"_lune.json");
-    files[8].file = fopen(files[8].path,"w+");
-    fprintf(files[8].file,"    \"%s%s\":","lune_",prefixe);
+    initiateFileData(&files[8], prefixe, "lune");
+
+    initiateFileData(&files[9], prefixe, "iss");
 
     return files;
 
@@ -518,7 +509,8 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
  * @param t L'instant t à laquelle les infos sont calculées
  */
 void saveFile(FILE * file, Planet planet, int t){
-    fprintf(file, ",\n      [[%e,%e,%e], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+    // %lf et pas %e pour être plus précis (pour voir l'ISS qui reste dans la Terre sinon)
+    fprintf(file, ",\n      [[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
 }
 
 /**

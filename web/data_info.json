@@ -48,5 +48,10 @@
         "Name" : "Neptune",
         "Color" : "rgb(0, 0, 255)",
         "Diametre" : 49244
+    },
+    "iss_RK4" : {
+        "Name" : "ISS",
+        "Color" : "rgb(255, 255, 255)",
+        "Diametre" : 25
     }
 }

@@ -1,12 +1,32 @@
+/**
+ * @file planetes.h
+ * @brief Un ensemble de fonctions pour estimer les trajectiores d'objets dans l'espace
+ * @authors SALMON RADENAC Théo, LAMOUR Briec
+ * @date 2026-06-14
+ */
+
+// LIBRAIRIES
+
 #include <stdio.h>
 #include <stdlib.h>
-#define N_PLANETS 9
+
+
+
+
+// DEFINES 
+
+#define N_PLANETS 10
 #define G 6.67408e-11
 #define PAS_REEL                     60           // fréquence des calcules (sec)
 #define PAS_SAUVEGARDE               86400           // fréquence de sauvegarde (sec)
 #define PERIODE_ENREGISTREMENT       365.25           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define DAY_TO_SEC 86400        // jour en secs
 #define mS 1.989e30
+
+
+
+
+// STRUCTS
 
 typedef struct s_vect{
     double x;
@@ -32,6 +52,9 @@ typedef struct s_k_liste{
 
 
 
+
+// OUTILS VECT
+
 double norme(Vect vecteur);
 
 Vect sumVect(Vect u, Vect v);
@@ -40,15 +63,29 @@ Vect combVect(Vect a, Vect b);
 
 Vect multVectScal(Vect vecteur, double scalaire);
 
+
+
+
+// ACCELERATIONS
+
 double acceleration(Planet planet);
 
 Vect accelerationInteract(Planet *planets, int id_target);
+
+
+
+
+// METHODES
+
+// Methodes Euler
 
 void euler(Planet * planet, int pas);
 
 void eulerInteract(Planet * planets, int pas);
 
 void eulerAsymInteract(Planet * planets, int pas);
+
+// Methode RK
 
 KList fRK(Planet * planets);
 
@@ -62,9 +99,21 @@ KList calcK4(Planet * planets, KList k2, KList k3, double h);
 
 void rk4(Planet * planets, int pas);
 
+
+
+
+// OUTILS PLANET
+
 Planet initPlanet(double m, double x, double y , double z, double vx, double vy, double vz);
 
 Planet * reset(Planet * planets);
+
+
+
+
+// OUTILS FICHIERS
+
+void initiateFileData(TempFILE * p_file, char * prefixe, char * name);
 
 TempFILE * initFiles(TempFILE * files, char * prefixe);
 
@@ -75,5 +124,10 @@ void saveToMain(FILE * methodes, TempFILE * listeFiles);
 void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int));
 
 void exportFile(FILE * mainFile, FILE * fileToPush);
+
+
+
+
+// UNIQUE FONCTION DE DEBUG
 
 void print_debug(Planet planet, int t);
