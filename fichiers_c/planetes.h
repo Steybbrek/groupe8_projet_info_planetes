@@ -22,6 +22,7 @@
 #define PERIODE_ENREGISTREMENT       365.25           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define DAY_TO_SEC 86400        // jour en secs
 #define mS 1.989e30
+#define LOADING_BAR 0           // bool pour rajouter une barre de chargement (plus long, donc réfléchir avant de l'utiliser)
 
 
 
@@ -128,6 +129,8 @@ void exportFile(FILE * mainFile, FILE * fileToPush);
 
 
 
-// UNIQUE FONCTION DE DEBUG
+// FONCTION DE DEBUG
+
+void print_loading_bar(double actuel, double total);
 
 void print_debug(Planet planet, int t);

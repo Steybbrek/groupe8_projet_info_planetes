@@ -4,11 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projet Planete</title>
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script type="importmap">
       {
         "imports": {
@@ -19,12 +15,59 @@
     </script>
   </head>
   <body>
-    <div id="ui-container" style="position: absolute; top: 20px; left: 20px; z-index: 100; color: white; font-family: sans-serif; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
-        <label for="stage_slider"> Stage : <span id="stage_value">1</span>d</label>
-        <br>
-        <input type="range" id="stage_slider" min="0" max="10" step="1" value="1" style="width: 200px;">
-        <button id="stage_autoplay">►</button>
+
+    <div id="ui-container">
+      <label for="stage_slider">Stage <span id="stage_value">1</span> d</label>
+      <input type="range" id="stage_slider" min="0" max="10" step="1" value="1">
+      <button id="stage_autoplay">► Play</button>
+
+      <form>
+        <div class="input-group">
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_planets"/>
+            <span class="checkbox__label" for="checkbox_planetes">Planetes</span>
+          </label>
+          
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_orbites"/>
+            <span class="checkbox__label" for="checkbox_orbites">Orbites</span>
+          </label>
+          
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_names"/>
+            <span class="checkbox__label" for="checkbox_names">Noms</span>
+          </label>
+          
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_etoile"/>
+            <span class="checkbox__label" for="checkbox_etoile">Etoile</span>
+          </label>
+
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_halo"/>
+            <span class="checkbox__label" for="checkbox_etoile">Halo</span>
+          </label>
+        </div>
+        
+        <div class="input-group">
+          <label class="radio">
+            <input class="radio__input" type="radio" id="radio_euler" name="integration_method" />
+            <span class="radio__label" for="radio_euler">Euler</span>
+          </label>
+          
+          <label class="radio">
+            <input class="radio__input" type="radio" id="radio_euler_async" name="integration_method" />
+            <span class="radio__label" for="radio_euler_async">Euler Asymetrique</span>
+          </label>
+          
+          <label class="radio">
+            <input class="radio__input" type="radio" id="radio_rk4" name="integration_method" />
+            <span class="radio__label" for="radio_rk4">RK4</span>
+          </label>
+        </div>
+      </form>
     </div>
+
     <script type="module" src="main.js"></script>
   </body>
 </html>

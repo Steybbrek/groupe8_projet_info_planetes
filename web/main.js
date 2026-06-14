@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import {fetchJSONData, createPlanets, Planete} from "./loader.js";
 import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "./draw.js";
-import {createRaycaster, onPointerMove, createPointer} from "./Collision.js"
+import {createRaycaster, detect_click, createPointer, reset_pointer} from "./Collision.js"
 
 async function main() {
     const w = window.innerWidth;
@@ -13,6 +13,7 @@ async function main() {
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         renderer.setSize( window.innerWidth, window.innerHeight);
+        labelRenderer.setSize( window.innerWidth, window.innerHeight);
         camera.updateProjectionMatrix();
     });
 
@@ -39,7 +40,6 @@ async function main() {
         }
     });
 
-
     //extract and create class
     const data_pos = await fetchJSONData('./methodes.json');
     const data_info = await fetchJSONData('./data_info.json');
@@ -52,15 +52,17 @@ async function main() {
     const camera = createCamera(45, w/h, 0.1, 5000)
     const controls = createControls(camera, renderer)
 
-    //draw planets / Orbits
+    //draw planets / Orbits / Halo
     planets.forEach(planet => {
         scene.add(planet.mesh);
         let path = './3D_texture/' + planet.name + ".glb"
         planet.load_3D_model(path);
-        planets.forEach(planet => planet.createName())
+        planet.createName()
         //Sun case
-        const temp = planet.drawOrbite()
-        if(temp != undefined) scene.add(planet.drawOrbite());
+        const orbite = planet.drawOrbite()
+        if(orbite != undefined) scene.add(orbite);
+        const halo = planet.createHalo()
+        if(halo != undefined) scene.add(halo)
     });
     
     //draw stars
@@ -70,9 +72,7 @@ async function main() {
     //Raycasting
     const pointer = createPointer()
     const raycaster = createRaycaster()
-    window.addEventListener('pointermove', (event) => {
-        onPointerMove(event, pointer);
-    });
+    detect_click(pointer)
     
     // create Light (for the 3d asset)
     const light = createLight()
@@ -98,16 +98,24 @@ async function main() {
             planets.forEach(planet => planet.update_position(document.getElementById('stage_value').textContent));
         }
         planets.forEach(planet => planet.update_rotation(t));
+
+        planets.forEach(planet => {
+            const halo = planet.updateHalo()
+            if(halo != undefined) halo.quaternion.copy(camera.quaternion);
+        });
+  
+
         planets.forEach(planet => planet.update_name())
+
         const meshesPlanetes = planets.map(p => p.mesh);
         raycaster.setFromCamera(pointer, camera)
         const intersects = raycaster.intersectObjects(meshesPlanetes, false);
 
         if (intersects.length > 0) {
-            console.log("Tu survoles une planète !");
-            console.log(intersects[0].object)
+            reset_pointer(pointer)
+            OnclickPlanet(intersects[0].object)
         }
-
+        if(time%60 == 0) menu(planets, Star)
         labelRenderer.render(scene, camera);
         renderer.render(scene, camera);
         controls.update();
@@ -116,4 +124,45 @@ async function main() {
     animate(0)
 }
 
+function menu(planets, Star) {
+    if (ischeck("checkbox_names")) {
+        planets.forEach(planet => planet.show_name())
+    }
+    else {
+        planets.forEach(planet => planet.hide_name())
+    }
+    if (ischeck("checkbox_etoile")) {
+        Star.visible = true
+    }
+    else {
+        Star.visible = false
+    }
+    if (ischeck("checkbox_orbites")) {
+        planets.forEach(planet => planet.show_orbite())
+    }
+    else {
+        planets.forEach(planet => planet.hide_orbite())
+    }
+    if (ischeck("checkbox_planets")) {
+        planets.forEach(planet => planet.show_planet())
+    }
+    else {
+        planets.forEach(planet => planet.hide_planet())
+    }
+    if (ischeck("checkbox_halo")) {
+        planets.forEach(planet => planet.show_halo())
+    }
+    else {
+        planets.forEach(planet => planet.hide_halo())
+    }
+}
+
+function ischeck(id) {
+    return document.getElementById(id).checked
+}
+
+function OnclickPlanet(mesh) {
+    console.log(mesh.userData.planet.name)
+    //window.location.href = "planete.html";
+}
 main();

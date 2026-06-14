@@ -546,10 +546,13 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
         temp_planet = planet_list[i];
         fprintf(files_list[i].file,"[[[%e,%e,%e], [%e,%e,%e], %d]", temp_planet.pos.x , temp_planet.pos.y , temp_planet.pos.z , temp_planet.v.x , temp_planet.v.y , temp_planet.v.z , 0);
     }
-
+    if(LOADING_BAR)printf("[--------------------] - 0%%");
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
-    for (int i = 1; i < ( DAY_TO_SEC * jours) / PAS_SAUVEGARDE; i++){
-        for (int j = 0; j < PAS_SAUVEGARDE/PAS_REEL; j++) f(planet_list, PAS_REEL);
+    for (int i = 1; i < (DAY_TO_SEC * jours) / PAS_SAUVEGARDE; i++){
+        for (int j = 0; j < PAS_SAUVEGARDE / PAS_REEL; j++){
+            f(planet_list, PAS_REEL);
+            if(LOADING_BAR)print_loading_bar((i - 1) * PAS_SAUVEGARDE / PAS_REEL + j, (DAY_TO_SEC * jours) / PAS_REEL);
+        }
         //debugLune(planet_list,i);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
@@ -559,6 +562,8 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
         fprintf(files_list[i].file,"]");
         
     }
+    if(LOADING_BAR)print_loading_bar(100,100);
+    if(LOADING_BAR)printf("\n");
 }
 
 /**
@@ -580,10 +585,20 @@ void exportFile(FILE * mainFile, FILE * fileToPush){
 
 /*
 ###############################################################################################################
-############################################ UNIQUE FONCTION DEBUG ############################################
+################################################ FONCTION DEBUG ###############################################
 ###############################################################################################################
 */
 
+/**
+ * @brief Barre de chargement
+ * @param actuel Pas actuel
+ * @param total Pas total à faire
+ */
+void print_loading_bar(double actuel, double total){
+    double div = actuel/total;
+    printf("\r[%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c] - %6.2lf%%",(div>=5)?'#':'-',(div>=10)?'#':'-',(div>=15)?'#':'-',(div>=20)?'#':'-',(div>=25)?'#':'-',(div>=30)?'#':'-',(div>=35)?'#':'-',(div>=40)?'#':'-',(div>=45)?'#':'-',(div>=50)?'#':'-',(div>=55)?'#':'-',(div>=60)?'#':'-',(div>=65)?'#':'-',(div>=70)?'#':'-',(div>=75)?'#':'-',(div>=80)?'#':'-',(div>=85)?'#':'-',(div>=90)?'#':'-',(div>=95)?'#':'-',(div>=100)?'#':'-',div*100);
+    fflush(stdout);
+}
 
 /**
  * @brief Affiche les infos de la planète au même format que le fichier json

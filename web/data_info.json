@@ -1,57 +1,52 @@
 {
-    "Soleil" : {
-        "Name" : "Soleil",
+    "Sun" : {
+        "Name" : "Sun",
         "Color" : "rgb(255, 255, 0)",
         "Diametre" : 1392684
     },
     "mercure_RK4" : {
-        "Name" : "Mercure",
+        "Name" : "mercury",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 4879
     },
     "venus_RK4" : {
-        "Name" : "Venus",
+        "Name" : "venus",
         "Color" : "rgb(128, 128, 128)",
         "Diametre" : 12103
     },
     "terre_RK4" : {
-        "Name" : "Terre",
+        "Name" : "earth",
         "Color" :"rgb(0, 255, 0)",
         "Diametre" : 12742
     },
     "lune_RK4" : {
-        "Name" : "Lune",
+        "Name" : "moon",
         "Color" : "rgb(200, 200, 200)",
         "Diametre" : 3474
     },
     "mars_RK4" : {
-        "Name" : "Mars",
+        "Name" : "mars",
         "Color" : "rgb(255, 0, 0)",
         "Diametre" : 6799
     },
     "jupiter_RK4" : {
-        "Name" : "Jupiter",
+        "Name" : "jupiter",
         "Color" : "rgb(255, 165, 0)",
         "Diametre" : 139820
     },
     "saturne_RK4" : {
-        "Name" : "Saturne",
+        "Name" : "saturn",
         "Color" : "rgb(210, 180, 140)",
         "Diametre" : 116460
     },
     "uranus_RK4" : {
-        "Name" : "Uranus",
+        "Name" : "uranus",
         "Color" : "rgb(173, 216, 230)",
         "Diametre" : 50724
     },
     "neptune_RK4" : {
-        "Name" : "Neptune",
+        "Name" : "neptune",
         "Color" : "rgb(0, 0, 255)",
         "Diametre" : 49244
-    },
-    "iss_RK4" : {
-        "Name" : "ISS",
-        "Color" : "rgb(255, 255, 255)",
-        "Diametre" : 25
     }
 }
