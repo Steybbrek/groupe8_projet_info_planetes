@@ -67,4 +67,8 @@ function createTextRenderer() {
     return labelRenderer
 }
 
+function createAsteroid(nb, position) {
+
+}
+
 export {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer};
