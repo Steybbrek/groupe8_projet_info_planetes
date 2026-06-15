@@ -4,7 +4,7 @@
 body {
   overflow: hidden;
   background: #000;
-  font-family: 'Courier New', monospace;   /* monospace donne un look spatial/technique */
+  font-family: 'sans-serif';
 }
 
 /* ── HUD panel ──────────────────────────────── */

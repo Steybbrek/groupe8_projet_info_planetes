@@ -8,6 +8,9 @@ import {createRaycaster, detect_click, createPointer, reset_pointer} from "./Col
 
 let method = "RK4"
 
+/**
+ * Fonction principale qui initialise le système solaire. Gère la scène 3D, l'interface utilisateur, le raycasting et la boucle d'animation.
+ */
 async function main() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -57,7 +60,7 @@ async function main() {
     planets.forEach(planet => {
         scene.add(planet.mesh);
         let path = './3D_texture/' + planet.name + ".glb"
-        planet.load_3D_model(path);
+        planet.load_3D_model(path, ischeck("checkbox_planete_realiste"));
         planet.createName()
         //soleil case
         const orbite = planet.drawOrbite()
@@ -65,6 +68,7 @@ async function main() {
         const halo = planet.createHalo()
         if(halo != undefined) scene.add(halo)
     });
+    add_menu_planete(planets)
     
     //draw stars
     const Star = createStars(3000, 200)
@@ -86,6 +90,10 @@ async function main() {
 
 
     let time = 0
+    /**
+     * Boucle de rendu exécutée à chaque frame.
+     * @param {number} t - Le temps écoulé depuis le lancement de la page.
+     */
     function animate(t) {
         requestAnimationFrame(animate);
         if(autoplay == true) {
@@ -104,7 +112,7 @@ async function main() {
         planets.forEach(planet => planet.update_rotation(t));
 
         planets.forEach(planet => {
-            const halo = planet.updateHalo()
+            const halo = planet.updateHalo(ischeck("checkbox_planete_realiste"), camera)
             if(halo != undefined) halo.quaternion.copy(camera.quaternion);
         });
   
@@ -119,6 +127,11 @@ async function main() {
             reset_pointer(pointer)
             OnclickPlanet(intersects[0].object)
         }
+        const followplanet = document.getElementById("planet_select").value
+        if (followplanet != "Soleil") camerafollow(followplanet, camera, planets, controls)
+
+        reset_pointer(pointer)
+
         if(time%60 == 0) menu(planets, Star)
         labelRenderer.render(scene, camera);
         renderer.render(scene, camera);
@@ -128,6 +141,11 @@ async function main() {
     animate(0)
 }
 
+/**
+ * Gère l'affichage (visible/invisible) des différents éléments de la scène selon les Checkboxs.
+ * @param {Planete[]} planets - Le tableau contenant toutes les planetes.
+ * @param {THREE.Points} Star - Le nuage de points représentant les etoiles.
+ */
 function menu(planets, Star) {
     if (ischeck("checkbox_names")) {
         planets.forEach(planet => planet.show_name())
@@ -161,24 +179,48 @@ function menu(planets, Star) {
     }
 }
 
+/**
+ * Vérifie si une case à cocher (checkbox) HTML est cochée ou non.
+ * @param {string} id - L'identifiant HTML de la case à cocher.
+ * @returns {boolean} True si cochée, False sinon.
+ */
 function ischeck(id) {
     return document.getElementById(id).checked
 }
 
+/**
+ * Redirige l'utilisateur vers la page de la planète cliquée.
+ * @param {THREE.Mesh} mesh - Le mesh 3D de la planète cliquée.
+ */
 function OnclickPlanet(mesh) {
     console.log(mesh.userData.planet.name.toLowerCase());
     const url = `planete_screen/planete.html?cible=${mesh.userData.planet.name.toLowerCase()}`;
     window.location.href = url;
 }
 
-function change_methode(planets, data_pos) {
-    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos));
-    document.getElementById("radio_euler_async")?.addEventListener("change", () => appliquerMethode("eulerAsym", planets, data_pos));
-    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos));
+/**
+ * Associe les boutons de l'interface aux différentes méthodes mathématiques d'intégration (et vrai taille).
+ * @param {Planete[]} planets - Le tableau des planetes de la scène.
+ * @param {Object} data_pos - Les données JSON des trajectoires.
+ * @param {THREE.Scene} scene - La scène principale.
+ */
+function change_methode(planets, data_pos, scene) {
+    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos, scene));
+    document.getElementById("radio_euler_assym")?.addEventListener("change", () => appliquerMethode("eulerAssym", planets, data_pos, scene));
+    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos, scene));
+    document.getElementById("checkbox_planete_realiste")?.addEventListener("change", () => reload3D(planets, scene));
 }
 
-function appliquerMethode(Method, planets, data_pos) {
+/**
+ * Applique la nouvelle méthode mathématique.
+ * @param {string} Method - Le nom de la méthode.
+ * @param {Planete[]} planets - Le tableau des planetes.
+ * @param {Object} data_pos - Les données JSON des trajectoires.
+ * @param {THREE.Scene} scene - La scène 3D.
+ */
+function appliquerMethode(Method, planets, data_pos, scene) {
     planets.forEach(planet => {
+        console.log("aa")
         if (planet.name !== "Soleil") {
             const key = `${planet.name}_${Method}`;
             
@@ -196,6 +238,48 @@ function appliquerMethode(Method, planets, data_pos) {
             }
         }
     });
+}
+
+/**
+ * Recharge les modèles 3D des planètes pour passer de la taille réelle à la taille agrandi.
+ * @param {Planete[]} planets - Le tableau des planetes.
+ * @param {THREE.Scene} scene - La scène 3D.
+ */
+function reload3D(planets, scene) {
+    planets.forEach(planet => {
+        if (planet.modele3D) {
+            planet.mesh.remove(planet.modele3D);
+            planet.modele3D = null
+        }
+        let path = './3D_texture/' + planet.name + ".glb"
+        planet.load_3D_model(path, ischeck("checkbox_planete_realiste"));
+    });
+}
+
+function add_menu_planete(planets) {
+    const menu = document.getElementById("planet_select");
+
+    planets.forEach(planet => {
+        if (planet.name !== "Soleil") {
+            const option = document.createElement("option");
+            option.value = planet.name;
+            option.textContent = planet.name;
+            menu.appendChild(option);
+        }
+    });
+}
+
+function camerafollow(followplanet, camera, planets, controls){
+    planets.forEach(planet => {
+        if(planet.name == followplanet) {
+            const direction = new THREE.Vector3();
+            const sun_pos = new THREE.Vector3(1, 0, 1)
+            direction.subVectors(camera.position, sun_pos).normalize();
+            camera.position.copy(planet.camera_pos).addScaledVector(direction, planet.camera_recul);
+            controls.target.copy(planet.camera_pos);
+            controls.update();
+        }
+    })
 }
 
 main();

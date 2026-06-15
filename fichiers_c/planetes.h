@@ -16,17 +16,17 @@
 
 // bools
 #define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
-#define ENERGIE         1                           // Calcule de l'énergie du système (impact fort sur les perfs)
+#define ENERGIE         0                           // Calcule de l'énergie du système (impact fort sur les perfs)
 #define EULER_T         0                           // Euler Terminal
 #define EULER           1                           // Euler Interact
 #define EULER_ASSYM     1                           // Euler Assymétrique
 #define RK4             1                           // RK4
 
 // constantes modifiables / paramètres
-#define N_PLANETS                    10             // nombre de planètes / objets
-#define PAS_REEL                     600             // fréquence des calcules (sec)
+#define N_PLANETS                    14             // nombre de planètes / objets
+#define PAS_REEL                     300            // fréquence des calculs (sec)
 #define PAS_SAUVEGARDE               86400          // fréquence de sauvegarde (sec)
-#define PERIODE_ENREGISTREMENT       3652.5         // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
+#define PERIODE_ENREGISTREMENT       3652.5         // période de calculs à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)
 
 // constantes à ne pas modifier

@@ -47,6 +47,11 @@
             <input class="checkbox__input" type="checkbox" id="checkbox_halo" checked/>
             <span class="checkbox__label" for="checkbox_etoile">Halo</span>
           </label>
+
+          <label class="checkbox">
+            <input class="checkbox__input" type="checkbox" id="checkbox_planete_realiste" checked/>
+            <span class="checkbox__label" for="checkbox_planete_realiste">Vrai Taille</span>
+          </label>
         </div>
         
         <div class="input-group">
@@ -56,8 +61,8 @@
           </label>
           
           <label class="radio">
-            <input class="radio__input" type="radio" id="radio_euler_asym" name="integration_method" />
-            <span class="radio__label" for="radio_euler_asym">Euler Asymetrique</span>
+            <input class="radio__input" type="radio" id="radio_euler_assym" name="integration_method" />
+            <span class="radio__label" for="radio_euler_assym">Euler Asymetrique</span>
           </label>
           
           <label class="radio">
@@ -66,6 +71,12 @@
           </label>
         </div>
       </form>
+      <div class="select_container">
+        <label for="planet_select">Choisissez une Planete a suivre :</label>
+        <select id="planet_select">
+          <option value="Soleil">Soleil</option>
+        </select>
+      </div>
     </div>
 
     <script type="module" src="main.js"></script>

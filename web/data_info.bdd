@@ -2,51 +2,196 @@
     "soleil": {
         "Name": "Soleil",
         "Color": "rgb(255, 255, 0)",
-        "Diametre": 1392684
+        "Diametre": 1392684,
+        "Masse": "1.989 x 10³⁰ kg",
+        "Gravite": "273.699 m/s²",
+        "Densite": "1.408 g/cm³",
+        "Distance_soleil": "—",
+        "Periode_orbitale": "—",
+        "Vitesse_orbitale": "—",
+        "Temperature_moyenne": "5 772 K (surface)",
+        "Composition": "H : 73%, He : 25%"
     },
     "mercure": {
         "Name": "Mercure",
         "Color": "rgb(128, 128, 128)",
-        "Diametre": 4879
+        "Diametre": 4879,
+        "Masse": "3.3011 x 10²³ kg",
+        "Gravite": "3.7 m/s²",
+        "Densite": "5.417 g/cm³",
+        "Distance_soleil": "5.79 x 10⁷ km",
+        "Periode_orbitale": "88 jours",
+        "Vitesse_orbitale": "47.9 km/s",
+        "Temperature_moyenne": "440 K",
+        "Composition": "—"
     },
     "venus": {
         "Name": "Venus",
-        "Color": "rgb(128, 128, 128)",
-        "Diametre": 12103
+        "Color": "rgb(255, 198, 100)",
+        "Diametre": 12103,
+        "Masse": "4.87 x 10²⁴ kg",
+        "Gravite": "8.87 m/s²",
+        "Densite": "5.24 g/cm³",
+        "Distance_soleil": "1.082 x 10⁸ km",
+        "Periode_orbitale": "225 jours",
+        "Vitesse_orbitale": "35.0 km/s",
+        "Temperature_moyenne": "737 K",
+        "Composition": "CO₂ : 96.5%, N₂ : 3.5%"
     },
     "terre": {
         "Name": "Terre",
-        "Color": "rgb(0, 255, 0)",
-        "Diametre": 12742
+        "Color": "rgb(0, 100, 255)",
+        "Diametre": 12742,
+        "Masse": "5.97 x 10²⁴ kg",
+        "Gravite": "9.81 m/s²",
+        "Densite": "5.51 g/cm³",
+        "Distance_soleil": "1.496 x 10⁸ km",
+        "Periode_orbitale": "365.25 jours",
+        "Vitesse_orbitale": "29.8 km/s",
+        "Temperature_moyenne": "288 K",
+        "Composition": "N₂ : 78%, O₂ : 21%"
     },
     "lune": {
         "Name": "Lune",
         "Color": "rgb(200, 200, 200)",
-        "Diametre": 3474
+        "Diametre": 3474,
+        "Masse": "7.35 x 10²² kg",
+        "Gravite": "1.62 m/s²",
+        "Densite": "3.34 g/cm³",
+        "Distance_soleil": "1.496 x 10⁸ km",
+        "Periode_orbitale": "27.3 jours (autour de la Terre)",
+        "Vitesse_orbitale": "1.02 km/s (autour de la Terre)",
+        "Temperature_moyenne": "220 K",
+        "Composition": "—"
     },
     "mars": {
         "Name": "Mars",
-        "Color": "rgb(255, 0, 0)",
-        "Diametre": 6799
+        "Color": "rgb(255, 80, 40)",
+        "Diametre": 6799,
+        "Masse": "6.42 x 10²³ kg",
+        "Gravite": "3.71 m/s²",
+        "Densite": "3.93 g/cm³",
+        "Distance_soleil": "2.279 x 10⁸ km",
+        "Periode_orbitale": "687 jours",
+        "Vitesse_orbitale": "24.1 km/s",
+        "Temperature_moyenne": "208 K",
+        "Composition": "CO₂ : 95.3%, N₂ : 2.6%, Ar : 1.9%"
     },
     "jupiter": {
         "Name": "Jupiter",
         "Color": "rgb(255, 165, 0)",
-        "Diametre": 139820
+        "Diametre": 139820,
+        "Masse": "1.898 x 10²⁷ kg",
+        "Gravite": "24.79 m/s²",
+        "Densite": "1.33 g/cm³",
+        "Distance_soleil": "7.785 x 10⁸ km",
+        "Periode_orbitale": "11.86 ans",
+        "Vitesse_orbitale": "13.1 km/s",
+        "Temperature_moyenne": "163 K",
+        "Composition": "H₂ : 89%, He : 10%"
+    },
+    "io": {
+        "Name": "Io",
+        "Color": "rgb(255, 220, 80)",
+        "Diametre": 3643,
+        "Masse": "8.932 x 10²² kg",
+        "Gravite": "1.796 m/s²",
+        "Densite": "3.528 g/cm³",
+        "Distance_soleil": "7.786 x 10⁸ km",
+        "Periode_orbitale": "1.769 jours (autour de Jupiter)",
+        "Vitesse_orbitale": "17.334 km/s (autour de Jupiter)",
+        "Temperature_moyenne": "110 K",
+        "Composition": "SO₂ : 90%, SO : 10%"
+    },
+    "europe": {
+        "Name": "Europe",
+        "Color": "rgb(210, 190, 160)",
+        "Diametre": 3122,
+        "Masse": "4.8 x 10²² kg",
+        "Gravite": "1.315 m/s²",
+        "Densite": "3.013 g/cm³",
+        "Distance_soleil": "7.786 x 10⁸ km",
+        "Periode_orbitale": "3.551 jours (autour de Jupiter)",
+        "Vitesse_orbitale": "13.74 km/s (autour de Jupiter)",
+        "Temperature_moyenne": "102 K",
+        "Composition": "O₂ : 100%"
+    },
+    "ganymede": {
+        "Name": "Ganymede",
+        "Color": "rgb(160, 145, 120)",
+        "Diametre": 5268,
+        "Masse": "1.4819 x 10²³ kg",
+        "Gravite": "1.428 m/s²",
+        "Densite": "1.936 g/cm³",
+        "Distance_soleil": "7.786 x 10⁸ km",
+        "Periode_orbitale": "7.155 jours (autour de Jupiter)",
+        "Vitesse_orbitale": "10.88 km/s (autour de Jupiter)",
+        "Temperature_moyenne": "110 K",
+        "Composition": "O₂ : 100%"
+    },
+    "callisto": {
+        "Name": "Callisto",
+        "Color": "rgb(100, 90, 80)",
+        "Diametre": 4821,
+        "Masse": "1.0759 x 10²³ kg",
+        "Gravite": "1.235 m/s²",
+        "Densite": "1.834 g/cm³",
+        "Distance_soleil": "7.786 x 10⁸ km",
+        "Periode_orbitale": "16.69 jours (autour de Jupiter)",
+        "Vitesse_orbitale": "8.204 km/s (autour de Jupiter)",
+        "Temperature_moyenne": "134 K",
+        "Composition": "CO₂ : 100%"
     },
     "saturne": {
         "Name": "Saturne",
         "Color": "rgb(210, 180, 140)",
-        "Diametre": 116460
+        "Diametre": 116460,
+        "Masse": "5.68 x 10²⁶ kg",
+        "Gravite": "10.44 m/s²",
+        "Densite": "0.687 g/cm³",
+        "Distance_soleil": "1.43 x 10⁹ km",
+        "Periode_orbitale": "29.45 ans",
+        "Vitesse_orbitale": "9.7 km/s",
+        "Temperature_moyenne": "133 K",
+        "Composition": "H₂ : 96%, He : 3%"
     },
     "uranus": {
         "Name": "Uranus",
         "Color": "rgb(173, 216, 230)",
-        "Diametre": 50724
+        "Diametre": 50724,
+        "Masse": "8.68 x 10²⁵ kg",
+        "Gravite": "8.69 m/s²",
+        "Densite": "1.27 g/cm³",
+        "Distance_soleil": "2.87 x 10⁹ km",
+        "Periode_orbitale": "84 ans",
+        "Vitesse_orbitale": "6.8 km/s",
+        "Temperature_moyenne": "78 K",
+        "Composition": "H₂ : 83%, He : 15%, CH₄ : 2%"
     },
     "neptune": {
         "Name": "Neptune",
-        "Color": "rgb(0, 0, 255)",
-        "Diametre": 49244
+        "Color": "rgb(0, 80, 255)",
+        "Diametre": 49244,
+        "Masse": "1.024 x 10²⁶ kg",
+        "Gravite": "11.15 m/s²",
+        "Densite": "1.64 g/cm³",
+        "Distance_soleil": "4.5 x 10⁹ km",
+        "Periode_orbitale": "164.8 ans",
+        "Vitesse_orbitale": "5.4 km/s",
+        "Temperature_moyenne": "73 K",
+        "Composition": "H₂ : 80%, He : 19%"
+    },
+    "pluton": {
+        "Name": "Pluton",
+        "Color": "rgb(188, 162, 132)",
+        "Diametre": 2376,
+        "Masse": "1.309 x 10²² kg",
+        "Gravite": "0.62 m/s²",
+        "Densite": "1.854 g/cm³",
+        "Distance_soleil": "5.91 x 10⁹ km",
+        "Periode_orbitale": "248 ans",
+        "Vitesse_orbitale": "4.7 km/s",
+        "Temperature_moyenne": "44 K",
+        "Composition": "N₂ : 98%, CH₄ : 2%"
     }
 }
