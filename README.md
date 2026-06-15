@@ -1,6 +1,6 @@
 # groupe8_projet_info_planetes
 
-## Mise en forme du fichier json : 
+## Informations sur les fichiers : 
 
 ### methodes.json
 <pre><code>{
@@ -13,9 +13,20 @@
     ...
 }</code></pre>
 
-**ATTENTION :** Le fichier json d'exemple possède de fois t = 0 par méthode, surement 1 d'initialisation et 1 du premier calcul.  
+<p><bold>ATTENTION :</bold> Le fichier json d'exemple possède 2 fois t = 0 par méthode, surement 1 d'initialisation et 1 du premier calcul.  
 On a donc supprimé le 1er t=0 pour avoir des données plus adaptées et simplifier les opérations
+</p>
+
 ---
+
+### makefile
+<p>Nous avons 3 options pour la compilation : 
+ - make planetes : compile les fichiers c, supprime les fichiers .o, execute le programme et supprime le programme
+ - make planetes_noDelete : make planetes mais conserve le programme compilé
+ - make vplanetes : make planetes mais execute avec valgrind
+ </p>
+
+ ---
 
 ## Données planétaires : 
 

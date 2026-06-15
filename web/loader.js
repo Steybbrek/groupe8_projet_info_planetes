@@ -7,14 +7,16 @@ class Planete {
     constructor(data, position) {
         this.scale_distance = 1e10;
         this.scale_taille = 5e5
+
         this.name = data["Name"];
         this.diametre = data["Diametre"];
         this.color = data["Color"]
         this.position = position
-        this.label
-        this.orbite_mesh
-        this.modele3D
-        this.halo
+        this.label = null
+        this.orbite_mesh = null
+        this.modele3D = null
+        this.halo = null
+
         if(this.diametre / 1e6 > 0.5) {
             this.geo = new THREE.SphereGeometry(this.diametre / this.scale_taille, 32, 32);
         }
@@ -22,7 +24,7 @@ class Planete {
         this.geo = new THREE.SphereGeometry(0.5, 32, 32);
         }
         this.mat = new THREE.MeshBasicMaterial({
-            color: this.color.toString()
+            color: this.color
         });
         this.mesh = new THREE.Mesh(this.geo, this.mat);
         this.mesh.userData.planet = this; //Permet de retrouver ces donnée apres le raycasting dans le intersect
@@ -38,7 +40,7 @@ class Planete {
     }
 
     update_position(i) {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             const x = this.position[i][0][0] / this.scale_distance;
             const y = this.position[i][0][1] / this.scale_distance;
             const z = this.position[i][0][2] / this.scale_distance;
@@ -47,7 +49,7 @@ class Planete {
     }
 
     interpolation(start, end, frame, frametonext) {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             let vector_start = new THREE.Vector3(
                 this.position[start][0][0] / this.scale_distance,
                 this.position[start][0][1] / this.scale_distance,
@@ -65,7 +67,7 @@ class Planete {
     }
 
     drawOrbite() {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             let points = []
             this.position.forEach(pos => {
                 let point_position = new THREE.Vector3
@@ -120,7 +122,7 @@ class Planete {
     }
 
     createHalo() {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             const geo = new THREE.CircleGeometry(0.5, 64);
             const bordure = new THREE.EdgesGeometry(geo);
             const mat = new THREE.LineBasicMaterial({ 
@@ -134,7 +136,7 @@ class Planete {
     }
 
     updateHalo() {
-        if(this.name != "Sun") {
+        if(this.name != "Soleil") {
             this.halo.position.copy(this.mesh.position);
         }
         return this.halo
@@ -199,28 +201,22 @@ function fetchJSONData(url) {
         }); 
 }
 
-function createPlanets(data_pos, data_info) {
-    let planets = [];
-    for (var planete_name in data_info) {
-        if (planete_name != "Sun") { planets.push(new Planete(data_info[planete_name], data_pos[planete_name]));}
-        else{ planets.push(new Planete(data_info["Sun"], [[0,0,0]])) }
+function createPlanets(data_pos, data_info, method) {
+    const planets = [];
+    for (let planete_name in data_info) {
+        const info = data_info[planete_name];
+        let positions;
+        if (planete_name == "soleil") {
+            positions = [ [[0, 0, 0], [0, 0, 0], 0] ];
+        } else {
+            //recreer le chemin avec "planete_name" + "_" + "methode_de_calcul"
+            const key = `${planete_name}_${method}`;
+            positions = data_pos[key];
+        }
+        planets.push(new Planete(info, positions));
     }
+ 
     return planets;
-}
-
-async function test() {
-    add_event
-    try {
-        const data = await fetchJSONData("./Data.json"); 
-        const planets = createPlanets(data);
-        planets.forEach(planet => planet.print());
-        console.log("DATA :", data)
-        console.log("Bodies:", data.bodies); 
-        console.log("Meta:", data.meta);
-        
-    } catch (error) {
-        console.error('Failed to process data:', error);
-    }
 }
 
 export {fetchJSONData, createPlanets, Planete};

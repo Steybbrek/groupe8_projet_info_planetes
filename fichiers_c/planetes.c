@@ -1,8 +1,7 @@
 /**
  * @file planetes.c
  * @brief Un ensemble de fonctions pour estimer les trajectiores d'objets dans l'espace
- * @authors SALMON RADENAC Théo, LAMOUR Briec
- * @date 2026-06-14
+ * @date 2026-06-15
  */
 
 // LIBRAIRIES
@@ -61,12 +60,12 @@ Vect sumListVect(Vect * list_vect, int n){
 }
 
 /**
- * @brief Fait la somme de 2 vecteurs
- * @param a Premier vecteur
- * @param b Deuxième vecteur
+ * @brief Soustrait un vecteur à un autre
+ * @param a Premier vecteur, valeur ajoutée
+ * @param b Deuxième vecteur, valeur soustraite
  * @return Le vecteur résultant
  */
-Vect combVect(Vect a, Vect b){
+Vect subtractVect(Vect a, Vect b){
     Vect ab;
     ab.x = a.x - b.x;
     ab.y = a.y - b.y;
@@ -119,7 +118,7 @@ Vect accelerationInteract(Planet *planets, int id_target){
 
     for (int i = 0 ; i < N_PLANETS ; i++){
         if (i != id_target){
-            r = combVect(planets[id_target].pos,planets[i].pos);
+            r = subtractVect(planets[id_target].pos,planets[i].pos);
             norme_r = norme(r);
             force = (-G * planets[i].m / (norme_r * norme_r * norme_r));
 
@@ -140,6 +139,71 @@ Vect accelerationInteract(Planet *planets, int id_target){
 
 /*
 ###############################################################################################################
+################################################### ENERGIES ##################################################
+###############################################################################################################
+*/
+
+
+/**
+ * @brief Calcul de l'Energie potentielle d'une planète
+ * @param planetes Liste de planètes
+ * @param id_target L'id de la planète cible
+ */
+double Ep(Planet * planets, int id_target){
+    
+    Vect r;
+    double norme_r;
+    double E = 0;
+    Planet target = planets[id_target];
+
+    for (int i = 0 ; i < N_PLANETS ; i++){
+        if (i != id_target){
+            r = subtractVect(target.pos,planets[i].pos);
+            norme_r = norme(r);
+            E = (-G * planets[i].m  * target.m / (norme_r * norme_r * norme_r));
+        }
+    }
+
+    //Soleil
+
+    r = target.pos;
+    norme_r = norme(r);
+    E = (-G * mS * target.m / (norme_r * norme_r * norme_r));
+    return E;
+}
+
+/**
+ * @brief Calcule l'énéregie cinétique d'une planète
+ * @param target Planète cible
+ */
+double Ec(Planet target){
+    double v = norme(target.v);
+    return target.m * v * v;
+}
+
+/**
+ * @brief Calcule l'énergie du système et si la marge d'erreur est dépassée, écrit un message dans un fichier
+ * @param planets Liste de planètes
+ * @param Esys Pointeur sur l'énergie cynétique précédente
+ */
+void ESysteme(Planet * planets, double * Esys, int jour, int etape, FILE * fileEnergie){
+    double Etot = 0;
+
+    for (int i = 0; i < N_PLANETS ; i++){
+        Etot += Ep(planets, i) + Ec(planets[i]);
+    }
+
+    if(*Esys == -3.1415926535) *Esys = Etot;
+
+    if (Etot > *Esys * (1+MARGE_ENERGIE*0.01) || Etot < *Esys * (1-MARGE_ENERGIE*0.01)){
+        fprintf(fileEnergie,"Variation de plus de %d%% détectée au jour %d, étape %d\n", MARGE_ENERGIE, jour, etape);
+    } 
+
+    *Esys = Etot;
+}
+
+/*
+###############################################################################################################
 ################################################## METHODES ###################################################
 ###############################################################################################################
 */
@@ -153,7 +217,7 @@ Vect accelerationInteract(Planet *planets, int id_target){
  */
 void euler(Planet * planet, int pas){
 
-    // Calcule de l'accélération à t-1
+    // Calcul de l'accélération à t-1
     double a = acceleration(*planet);
 
     planet->a = multVectScal(planet->pos,a);
@@ -206,7 +270,7 @@ void eulerInteract(Planet * planets, int pas){
  * @param planets Liste des planètes
  * @param pas Pas en secondes
  */
-void eulerAsymInteract(Planet * planets, int pas){
+void eulerAssymInteract(Planet * planets, int pas){
     Vect  a_list[N_PLANETS];
     Planet * planet;
     double a_sol;
@@ -248,7 +312,6 @@ void eulerAsymInteract(Planet * planets, int pas){
  */
 KList fRK(Planet * planets){
     KList k;
-    k.vect = malloc(N_PLANETS*sizeof(Vect)); //si je fais pas ça, ça plante
     for (int i = 0 ; i < N_PLANETS ; i++){
         k.vect[i] = accelerationInteract(planets, i);
     }
@@ -256,7 +319,7 @@ KList fRK(Planet * planets){
 }
 
 /**
- * @brief Calcule de K1 de la méthode RK
+ * @brief Calcul de K1 de la méthode RK
  * @param planets Liste des planètes
  * @return Liste des k1
  */
@@ -265,7 +328,7 @@ KList calcK1(Planet * planets){
 }
 
 /**
- * @brief Calcule de K2 de la méthode RK
+ * @brief Calcul de K2 de la méthode RK
  * @param planets Liste des planètes
  * @param k1 K précédent
  * @param h intervalle
@@ -284,7 +347,7 @@ KList calcK2(Planet * planets, KList k1, double h){
 }
 
 /**
- * @brief Calcule de K3 de la méthode RK
+ * @brief Calcul de K3 de la méthode RK
  * @param planets Liste des planètes
  * @param k1 K précédent le précéndent (précent² ?)
  * @param k2 K précédent
@@ -304,7 +367,7 @@ KList calcK3(Planet * planets, KList k1, KList k2, double h){
 }
 
 /**
- * @brief Calcule de K4 de la méthode RK
+ * @brief Calcul de K4 de la méthode RK
  * @param planets Liste des planètes
  * @param k2 K précédent le précéndent (précent² ?)
  * @param k3 K précédent
@@ -340,6 +403,7 @@ void rk4(Planet * planets, int pas){
 
     // pas très beau mais application de la formule finale
     for (int i = 0; i < N_PLANETS; i++) {
+
         // k1 à k3 pour la position des objets
         Vect kPos[3] = {k1.vect[i], k2.vect[i], k3.vect[i]};
         // k1, 2k2, 2k3 et k4 pour la vitesse des objets
@@ -350,10 +414,6 @@ void rk4(Planet * planets, int pas){
         // v + (h/6) x (k1 + 2 x k2 + 2 x k3 + k4)
         planets[i].v   = sumVect(planets[i].v, multVectScal(sumListVect(kV, 6), h / 6.0));
     }
-    free(k1.vect);
-    free(k2.vect);
-    free(k3.vect);
-    free(k4.vect);
 }
 
 
@@ -510,7 +570,7 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
  */
 void saveFile(FILE * file, Planet planet, int t){
     // %lf et pas %e pour être plus précis (pour voir l'ISS qui reste dans la Terre sinon)
-    fprintf(file, ",\n      [[%lf,%lf,%lf], [%lf,%lf,%lf], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
+    fprintf(file, ",\n      [[%e,%e,%e], [%e,%e,%e], %d]", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
 }
 
 /**
@@ -537,10 +597,12 @@ void saveToMain(FILE * methodes, TempFILE * listeFiles){
  * @param TempFILE Liste des fichiers temporaires
  * @param jours Nombre de jours à calculer
  * @param f Fonction à utiliser
+ * @param energie Fichier de sauvegarde pour l'énergie
  */
-void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int)){
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int), FILE * energie){
     Planet temp_planet;
     int progress = 0;
+    double Esys = -3.1415926535;
 
     // boucle ajout des infos dans le bon format pour t = 0
     for (int i = 0; i < N_PLANETS; i++){
@@ -551,11 +613,13 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
 
     // boucle ajout des infos dans le bon format pout t=1 à t=tmax
     for (int i = 1; i < (DAY_TO_SEC * jours) / PAS_SAUVEGARDE; i++){
+        // boucle pas reel
         for (int j = 0; j < PAS_SAUVEGARDE / PAS_REEL; j++){
             f(planet_list, PAS_REEL);
             print_loading_bar((i - 1) * PAS_SAUVEGARDE / PAS_REEL + j, (DAY_TO_SEC * jours) / PAS_REEL, &progress);
+
+            if(ENERGIE) ESysteme(planet_list,&Esys,i,j,energie);
         }
-        //debugLune(planet_list,i);
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }
@@ -614,7 +678,7 @@ void print_loading_bar(double actuel, double total, int * progress){
                 printf("-");
             }
 
-            printf("] - %5.2lf%%", div/100.00);
+            printf("] - %6.2lf%%", div/100.00);
             *progress = div;
         }
     }
@@ -628,4 +692,38 @@ void print_loading_bar(double actuel, double total, int * progress){
 void print_debug(Planet planet, int t){
     printf("[[%e,%e,%e], [%e,%e,%e], %d]\n", planet.pos.x , planet.pos.y , planet.pos.z , planet.v.x , planet.v.y , planet.v.z , t);
     // [[x,y,z], [vx,vy,vz], t]
+}
+
+/**
+ * @brief Affiche les options sélectionnés pour l'execution
+ */
+void print_options(){
+    printf("Options séléctionnées :\n");
+    printf("   - Barre de chargement :              %d\n",LOADING_BAR);
+    printf("   - Calculs d'énergie :                %d\n",ENERGIE);
+    printf("   - Méthode d'Euler - Terminal :       %d\n",EULER_T);
+    printf("   - Méthode d'Euler - Fichier :        %d\n",EULER);
+    printf("   - Méthode d'Euler Assymétrique :     %d\n",EULER_ASSYM);
+    printf("   - Méthode de Runge-Kutta 4 :         %d\n",RK4);
+
+    printf("\nValeurs des constantes :\n");
+    printf("   - Nombre de planètes :               %d\n",N_PLANETS);
+    printf("   - Période d'enregistrement :         %.2lf jours\n",PERIODE_ENREGISTREMENT);
+    printf("   - Pas de sauvegarde :                %d sec\n",PAS_SAUVEGARDE);
+    printf("   - Pas reel :                         %d sec\n",PAS_REEL);
+    printf("   - Marge d'erreur énergie du sytème : %d%%\n",RK4);
+    printf("\n");
+}
+
+/**
+ * @brief Affiche le contenu du fichier
+ * @param file Le fichier à lire
+ */
+void print_file(FILE * file){
+    fseek(file,0,SEEK_SET);
+    char c = fgetc(file);
+    while(c!=EOF){
+        printf("%c",c);
+        c = fgetc(file);
+    }
 }

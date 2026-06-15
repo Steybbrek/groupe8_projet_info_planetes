@@ -1,8 +1,7 @@
 /**
  * @file planetes.h
  * @brief Un ensemble de fonctions pour estimer les trajectiores d'objets dans l'espace
- * @authors SALMON RADENAC Théo, LAMOUR Briec
- * @date 2026-06-14
+ * @date 2026-06-15
  */
 
 // LIBRAIRIES
@@ -15,14 +14,25 @@
 
 // DEFINES 
 
-#define N_PLANETS 10
-#define G 6.67408e-11
-#define PAS_REEL                     60           // fréquence des calcules (sec)
-#define PAS_SAUVEGARDE               86400           // fréquence de sauvegarde (sec)
-#define PERIODE_ENREGISTREMENT       365.25           // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
-#define DAY_TO_SEC 86400        // jour en secs
-#define mS 1.989e30
-#define LOADING_BAR 1           // bool pour rajouter une barre de chargement (impact très léger sur les perfs)
+// bools
+#define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
+#define ENERGIE         1                           // Calcule de l'énergie du système (impact fort sur les perfs)
+#define EULER_T         0                           // Euler Terminal
+#define EULER           1                           // Euler Interact
+#define EULER_ASSYM     1                           // Euler Assymétrique
+#define RK4             1                           // RK4
+
+// constantes modifiables / paramètres
+#define N_PLANETS                    10             // nombre de planètes / objets
+#define PAS_REEL                     600             // fréquence des calcules (sec)
+#define PAS_SAUVEGARDE               86400          // fréquence de sauvegarde (sec)
+#define PERIODE_ENREGISTREMENT       3652.5         // période de calcule à partir du 10 juin 2026 00:00:00 TDB (jours)
+#define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)
+
+// constantes à ne pas modifier
+#define G 6.67408e-11                               // constante de gravitation
+#define DAY_TO_SEC 86400                            // jour en secs
+#define mS 1.989e30                                 // masse solaire (kg)
 
 
 
@@ -48,8 +58,8 @@ typedef struct s_temp_file{
 }TempFILE;
 
 typedef struct s_k_liste{
-    Vect * vect;
-}KList;
+    Vect vect[N_PLANETS];
+}KList; // était utile lorsqu'il y avait 2 listes de vect pour RK 4 classique mais est inutile (ou presque) pour RK 4 avec dérivée 2nde
 
 
 
@@ -60,7 +70,7 @@ double norme(Vect vecteur);
 
 Vect sumVect(Vect u, Vect v);
 
-Vect combVect(Vect a, Vect b);
+Vect subtractVect(Vect a, Vect b);
 
 Vect multVectScal(Vect vecteur, double scalaire);
 
@@ -76,6 +86,17 @@ Vect accelerationInteract(Planet *planets, int id_target);
 
 
 
+// ENERGIES
+
+double Ep(Planet * planets, int id_target);
+
+double Ec(Planet target);
+
+void ESysteme(Planet * planets, double * Esys, int jour, int etape, FILE * fileEnergie);
+
+
+
+
 // METHODES
 
 // Methodes Euler
@@ -84,7 +105,7 @@ void euler(Planet * planet, int pas);
 
 void eulerInteract(Planet * planets, int pas);
 
-void eulerAsymInteract(Planet * planets, int pas);
+void eulerAssymInteract(Planet * planets, int pas);
 
 // Methode RK
 
@@ -122,7 +143,7 @@ void saveFile(FILE * file, Planet planet, int t);
 
 void saveToMain(FILE * methodes, TempFILE * listeFiles);
 
-void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int));
+void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, void (*f)(Planet *, int), FILE * energie);
 
 void exportFile(FILE * mainFile, FILE * fileToPush);
 
@@ -134,3 +155,7 @@ void exportFile(FILE * mainFile, FILE * fileToPush);
 void print_loading_bar(double actuel, double total, int * progress);
 
 void print_debug(Planet planet, int t);
+
+void print_options();
+
+void print_file(FILE * file);

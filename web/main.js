@@ -6,9 +6,16 @@ import {fetchJSONData, createPlanets, Planete} from "./loader.js";
 import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "./draw.js";
 import {createRaycaster, detect_click, createPointer, reset_pointer} from "./Collision.js"
 
+let method = "RK4"
+
 async function main() {
     const w = window.innerWidth;
     const h = window.innerHeight;
+
+    //extract and create class
+    const data_pos = await fetchJSONData('./methodes.json');
+    const data_info = await fetchJSONData('./data_info.bdd');
+    const planets = createPlanets(data_pos, data_info, method);
 
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -22,8 +29,8 @@ async function main() {
     const StageValue = document.getElementById("stage_value");
     const button = document.getElementById("stage_autoplay")
     let stage = 1;
-    //TO DO : AUTOGENERATE
-    slider.max = 3651
+    //[1] parce que [0] c'est le soleil
+    slider.max = planets[1].position.length - 1;
     slider.addEventListener('input', (event) => {
         stage = parseInt(event.target.value);
         StageValue.innerText = stage;
@@ -40,12 +47,6 @@ async function main() {
         }
     });
 
-    //extract and create class
-    const data_pos = await fetchJSONData('./methodes.json');
-    const data_info = await fetchJSONData('./data_info.json');
-    const planets = createPlanets(data_pos, data_info);
-    planets.forEach(planet => planet.print());
-
     //set-up draw scene
     const renderer = createRenderer(w, h)
     const scene = createScene()
@@ -58,7 +59,7 @@ async function main() {
         let path = './3D_texture/' + planet.name + ".glb"
         planet.load_3D_model(path);
         planet.createName()
-        //Sun case
+        //soleil case
         const orbite = planet.drawOrbite()
         if(orbite != undefined) scene.add(orbite);
         const halo = planet.createHalo()
@@ -80,6 +81,9 @@ async function main() {
 
     const labelRenderer = createTextRenderer()
     document.body.appendChild(labelRenderer.domElement);
+
+    change_methode(planets, data_pos, scene);
+
 
     let time = 0
     function animate(t) {
@@ -162,7 +166,36 @@ function ischeck(id) {
 }
 
 function OnclickPlanet(mesh) {
-    console.log(mesh.userData.planet.name)
-    //window.location.href = "planete.html";
+    console.log(mesh.userData.planet.name.toLowerCase());
+    const url = `planete_screen/planete.html?cible=${mesh.userData.planet.name.toLowerCase()}`;
+    window.location.href = url;
 }
+
+function change_methode(planets, data_pos) {
+    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos));
+    document.getElementById("radio_euler_async")?.addEventListener("change", () => appliquerMethode("eulerAsym", planets, data_pos));
+    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos));
+}
+
+function appliquerMethode(Method, planets, data_pos) {
+    planets.forEach(planet => {
+        if (planet.name !== "Soleil") {
+            const key = `${planet.name}_${Method}`;
+            
+            if (data_pos[key]) {
+                planet.position = data_pos[key];
+
+                if (planet.orbite_mesh) {
+                    scene.remove(planet.orbite_mesh);
+                    planet.orbite_mesh.geometry.dispose();
+                    planet.orbite_mesh.material.dispose();
+                }
+
+                const nouvelleOrbite = planet.drawOrbite();
+                if (nouvelleOrbite) scene.add(nouvelleOrbite);
+            }
+        }
+    });
+}
+
 main();
