@@ -1,0 +1,140 @@
+/* ── Reset & base ───────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  overflow: hidden;
+  background: #000;
+  font-family: 'sans-serif';
+}
+
+/* ── HUD panel ──────────────────────────────── */
+#ui-container {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 100;
+  color: #c8e6ff;
+  background: rgba(6, 20, 40, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 18px 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(100, 180, 255, 0.18);
+  min-width: 240px;
+}
+
+/* ── Slider row ─────────────────────────────── */
+#ui-container label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #7ab8e8;
+  margin-bottom: 10px;
+}
+
+#stage_value {
+  color: #fff;
+  font-size: 13px;
+  min-width: 2ch;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: rgba(100, 180, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #4aa8ff;
+  cursor: pointer;
+  border: 2px solid #c8e6ff;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #4aa8ff;
+  cursor: pointer;
+  border: 2px solid #c8e6ff;
+}
+
+/* ── Autoplay button ────────────────────────── */
+#stage_autoplay {
+  margin-top: 12px;
+  display: block;
+  width: 100%;
+  padding: 6px 0;
+  background: rgba(74, 168, 255, 0.12);
+  border: 1px solid rgba(100, 180, 255, 0.3);
+  border-radius: 4px;
+  color: #c8e6ff;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: .1em;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+#stage_autoplay:hover {
+  background: rgba(74, 168, 255, 0.25);
+  border-color: rgba(100, 180, 255, 0.6);
+}
+
+/* ── Divider between slider and form ───────── */
+form {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(100, 180, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Input groups (checkboxes / radios) ─────── */
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+/* shared label style */
+.checkbox, .radio {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #90c4e8;
+  user-select: none;
+}
+.checkbox:hover, .radio:hover { color: #c8e6ff; }
+
+/* hide native input, draw custom */
+.checkbox__input, .radio__input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(100, 180, 255, 0.4);
+  background: rgba(6, 20, 40, 0.6);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .12s, border-color .12s;
+}
+.checkbox__input            { border-radius: 3px; }
+.radio__input               { border-radius: 50%; }
+
+.checkbox__input:checked,
+.radio__input:checked {
+  background: #4aa8ff;
+  border-color: #4aa8ff;
+  box-shadow: 0 0 6px rgba(74, 168, 255, 0.5);
+}
