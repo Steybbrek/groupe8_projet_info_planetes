@@ -4,8 +4,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {fetchJSONData, createPlanet, Planete} from "./loader.js";
 import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "../draw.js";
 
+/**
+ * Fonction principale asynchrone qui initialise l'environnement 3D, charge les données de la planète ciblée et lance la boucle d'animation.
+ */
 async function main() {
-    const w = window.innerWidth-(window.innerWidth/3);
+    const w = window.innerWidth*2/3;
     const h = window.innerHeight;
     const parametresUrl = new URLSearchParams(window.location.search);
     const cible = parametresUrl.get('cible');
@@ -15,8 +18,8 @@ async function main() {
     const planet = createPlanet(data_info, cible);
 
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        renderer.setSize( window.innerWidth-(window.innerWidth/3), window.innerHeight);
+        camera.aspect = window.innerWidth*2/3 / window.innerHeight;
+        renderer.setSize( window.innerWidth*2/3, window.innerHeight);
         camera.updateProjectionMatrix();
     });
 
@@ -46,18 +49,19 @@ async function main() {
     document.getElementById("info_masse").innerHTML = planet.masse
     document.getElementById("info_gravite").innerHTML = planet.gravity
     document.getElementById("info_densite").innerHTML = planet.densite
-    document.getElementById("info_gravite").innerHTML = planet.gravity
     document.getElementById("info_distance").innerHTML = planet.distance_soleil
     document.getElementById("info_periode").innerHTML = planet.periode_orbitale
     document.getElementById("info_vitesse").innerHTML = planet.vitesse_orbitale
     document.getElementById("info_atmo").innerHTML = planet.composition
     document.getElementById("info_temp").innerHTML = planet.temperature_moyenne
 
+    /**
+     * Boucle de rendu exécutée à chaque frame.
+     * @param {number} t - Le temps écoulé depuis le début de l'animation.
+     */
     function animate(t) {
         requestAnimationFrame(animate);
-        
         planet.update_rotation(t);
-
         renderer.render(scene, camera);
         controls.update();
     }

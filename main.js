@@ -8,6 +8,9 @@ import {createRaycaster, detect_click, createPointer, reset_pointer} from "./Col
 
 let method = "RK4"
 
+/**
+ * Fonction principale qui initialise le système solaire. Gère la scène 3D, l'interface utilisateur, le raycasting et la boucle d'animation.
+ */
 async function main() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -86,6 +89,10 @@ async function main() {
 
 
     let time = 0
+    /**
+     * Boucle de rendu exécutée à chaque frame.
+     * @param {number} t - Le temps écoulé depuis le lancement de la page.
+     */
     function animate(t) {
         requestAnimationFrame(animate);
         if(autoplay == true) {
@@ -104,7 +111,7 @@ async function main() {
         planets.forEach(planet => planet.update_rotation(t));
 
         planets.forEach(planet => {
-            const halo = planet.updateHalo()
+            const halo = planet.updateHalo(ischeck("checkbox_planete_realiste"), camera)
             if(halo != undefined) halo.quaternion.copy(camera.quaternion);
         });
   
@@ -128,6 +135,11 @@ async function main() {
     animate(0)
 }
 
+/**
+ * Gère l'affichage (visible/invisible) des différents éléments de la scène selon les Checkboxs.
+ * @param {Planete[]} planets - Le tableau contenant toutes les planetes.
+ * @param {THREE.Points} Star - Le nuage de points représentant les etoiles.
+ */
 function menu(planets, Star) {
     if (ischeck("checkbox_names")) {
         planets.forEach(planet => planet.show_name())
@@ -161,16 +173,31 @@ function menu(planets, Star) {
     }
 }
 
+/**
+ * Vérifie si une case à cocher (checkbox) HTML est cochée ou non.
+ * @param {string} id - L'identifiant HTML de la case à cocher.
+ * @returns {boolean} True si cochée, False sinon.
+ */
 function ischeck(id) {
     return document.getElementById(id).checked
 }
 
+/**
+ * Redirige l'utilisateur vers la page de la planète cliquée.
+ * @param {THREE.Mesh} mesh - Le mesh 3D de la planète cliquée.
+ */
 function OnclickPlanet(mesh) {
     console.log(mesh.userData.planet.name.toLowerCase());
     const url = `planete_screen/planete.html?cible=${mesh.userData.planet.name.toLowerCase()}`;
     window.location.href = url;
 }
 
+/**
+ * Associe les boutons de l'interface aux différentes méthodes mathématiques d'intégration (et vrai taille).
+ * @param {Planete[]} planets - Le tableau des planetes de la scène.
+ * @param {Object} data_pos - Les données JSON des trajectoires.
+ * @param {THREE.Scene} scene - La scène principale.
+ */
 function change_methode(planets, data_pos, scene) {
     document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos));
     document.getElementById("radio_euler_async")?.addEventListener("change", () => appliquerMethode("eulerAsym", planets, data_pos));
@@ -178,6 +205,13 @@ function change_methode(planets, data_pos, scene) {
     document.getElementById("checkbox_planete_realiste")?.addEventListener("change", () => reload3D(planets, scene));
 }
 
+/**
+ * Applique la nouvelle méthode mathématique.
+ * @param {string} Method - Le nom de la méthode.
+ * @param {Planete[]} planets - Le tableau des planetes.
+ * @param {Object} data_pos - Les données JSON des trajectoires.
+ * @param {THREE.Scene} scene - La scène 3D.
+ */
 function appliquerMethode(Method, planets, data_pos) {
     planets.forEach(planet => {
         if (planet.name !== "Soleil") {
@@ -199,6 +233,11 @@ function appliquerMethode(Method, planets, data_pos) {
     });
 }
 
+/**
+ * Recharge les modèles 3D des planètes pour passer de la taille réelle à la taille agrandi.
+ * @param {Planete[]} planets - Le tableau des planetes.
+ * @param {THREE.Scene} scene - La scène 3D.
+ */
 function reload3D(planets, scene) {
     planets.forEach(planet => {
         if (planet.modele3D) {
