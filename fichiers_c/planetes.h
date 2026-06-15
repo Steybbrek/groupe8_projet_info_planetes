@@ -1,7 +1,7 @@
 /**
  * @file planetes.h
  * @brief Un ensemble de fonctions pour estimer les trajectiores d'objets dans l'espace
- * @date 2026-06-15
+ * @date 2026-06-16
  */
 
 // LIBRAIRIES
