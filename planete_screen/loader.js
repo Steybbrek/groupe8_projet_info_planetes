@@ -12,6 +12,15 @@ class Planete {
         this.color = data["Color"]
         this.modele3D = null
 
+        this.masse = data["Masse"]
+        this.gravity = data["Gravite"]
+        this.densite = data["Densite"]
+        this.distance_soleil = data["Distance_soleil"]
+        this.periode_orbitale = data["Periode_orbitale"]
+        this.vitesse_orbitale = data["Vitesse_orbitale"]
+        this.composition = data["Composition"]
+        this.temperature_moyenne = data["Temperature_moyenne"]
+
         
         this.geo = new THREE.SphereGeometry(this.diametre / this.scale_taille, 32, 32);
         this.mat = new THREE.MeshBasicMaterial({
@@ -38,7 +47,6 @@ class Planete {
             const tailleActuelle = box.getSize(new THREE.Vector3()).x;
             console.log(tailleActuelle)
             let tailleCible = 1;
-
             const ratio = tailleCible / tailleActuelle;
             console.log(ratio)
             this.modele3D.scale.set(ratio, ratio, ratio); 

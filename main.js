@@ -57,7 +57,7 @@ async function main() {
     planets.forEach(planet => {
         scene.add(planet.mesh);
         let path = './3D_texture/' + planet.name + ".glb"
-        planet.load_3D_model(path);
+        planet.load_3D_model(path, ischeck("checkbox_planete_realiste"));
         planet.createName()
         //soleil case
         const orbite = planet.drawOrbite()
@@ -171,10 +171,11 @@ function OnclickPlanet(mesh) {
     window.location.href = url;
 }
 
-function change_methode(planets, data_pos) {
+function change_methode(planets, data_pos, scene) {
     document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos));
     document.getElementById("radio_euler_async")?.addEventListener("change", () => appliquerMethode("eulerAsym", planets, data_pos));
     document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos));
+    document.getElementById("checkbox_planete_realiste")?.addEventListener("change", () => reload3D(planets, scene));
 }
 
 function appliquerMethode(Method, planets, data_pos) {
@@ -195,6 +196,17 @@ function appliquerMethode(Method, planets, data_pos) {
                 if (nouvelleOrbite) scene.add(nouvelleOrbite);
             }
         }
+    });
+}
+
+function reload3D(planets, scene) {
+    planets.forEach(planet => {
+        if (planet.modele3D) {
+            planet.mesh.remove(planet.modele3D);
+            planet.modele3D = null
+        }
+        let path = './3D_texture/' + planet.name + ".glb"
+        planet.load_3D_model(path, ischeck("checkbox_planete_realiste"));
     });
 }
 

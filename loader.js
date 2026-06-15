@@ -87,7 +87,7 @@ class Planete {
         }
     }
 
-    load_3D_model(fichier) {
+    load_3D_model(fichier, realiste) {
         const loader = new GLTFLoader();
         loader.load(fichier, (gltf) => {
             this.modele3D = gltf.scene;
@@ -97,7 +97,11 @@ class Planete {
             const tailleActuelle = box.getSize(new THREE.Vector3()).x;
             console.log(tailleActuelle)
             let tailleCible = this.diametre / this.scale_taille;
-
+            if (!realiste) {
+                if (tailleCible < 0.1) {
+                    tailleCible = 1;
+                }
+            }
             const ratio = tailleCible / tailleActuelle;
             console.log(ratio)
             this.modele3D.scale.set(ratio, ratio, ratio); 

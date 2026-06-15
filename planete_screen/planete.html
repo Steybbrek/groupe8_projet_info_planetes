@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF_8">
     <title>Détails de la Planète</title>
+    <link rel="stylesheet" href="style.css">
     <script type="importmap">
       {
         "imports": {
@@ -11,11 +12,73 @@
         }
       }
     </script>
-    <style>
-        body { margin: 0; overflow: hidden; background-color: black; }
-    </style>
 </head>
 <body>
+    <!__ Zone Three.js : le canvas sera appendé ici par main_planetes.js __>
+    <div id="canvas_zone"></div>
+
+    <!__ Panneau d'info __>
+    <aside id="info_panel">
+        <div class="panel_header">
+            <div class="eyebrow">Système Solaire</div>
+            <h1 id="planet_name">—</h1>
+        </div>
+
+        <div class="panel_body">
+            <div class="section_label">Physique</div>
+
+            <div class="data_row">
+                <span class="label">Diamètre</span>
+                <span class="value" id="info_diametre">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Masse</span>
+                <span class="value" id="info_masse">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Gravité de surface</span>
+                <span class="value" id="info_gravite">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Densité</span>
+                <span class="value" id="info_densite">—</span>
+            </div>
+
+            <div class="section_label">Orbite</div>
+
+            <div class="data_row">
+                <span class="label">Distance au Soleil</span>
+                <span class="value" id="info_distance">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Période orbitale</span>
+                <span class="value" id="info_periode">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Vitesse orbitale</span>
+                <span class="value" id="info_vitesse">—</span>
+            </div>
+
+            <div class="section_label">Atmosphère</div>
+
+            <div class="data_row">
+                <span class="label">Composition</span>
+                <span class="value" id="info_atmo">—</span>
+            </div>
+            <div class="data_row">
+                <span class="label">Température moyenne</span>
+                <span class="value" id="info_temp">—</span>
+            </div>
+        </div>
+
+        <div class="panel_footer">
+            <a id="btn_retour" href="../index.html">
+                <span class="arrow">←</span>
+                Retour au système solaire
+            </a>
+        </div>
+    </aside>
+
     <script type="module" src="main_planetes.js"></script>
 </body>
 </html>

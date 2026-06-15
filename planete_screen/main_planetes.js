@@ -16,12 +16,13 @@ async function main() {
 
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
-        renderer.setSize( window.innerWidth, window.innerHeight);
+        renderer.setSize( window.innerWidth-(window.innerWidth/3), window.innerHeight);
         camera.updateProjectionMatrix();
     });
 
     //set-up draw scene
     const renderer = createRenderer(w, h)
+    document.getElementById('canvas_zone').appendChild(renderer.domElement);
     const scene = createScene()
     const camera = createCamera(45, w/h, 0.1, 5000)
     camera.position.z = 5;
@@ -39,6 +40,18 @@ async function main() {
     const intensity = 1;
     const light = new THREE.AmbientLight(color, intensity);
     scene.add(light);
+
+    document.getElementById("planet_name").innerHTML = planet.name
+    document.getElementById("info_diametre").innerHTML = planet.diametre + " km"
+    document.getElementById("info_masse").innerHTML = planet.masse
+    document.getElementById("info_gravite").innerHTML = planet.gravity
+    document.getElementById("info_densite").innerHTML = planet.densite
+    document.getElementById("info_gravite").innerHTML = planet.gravity
+    document.getElementById("info_distance").innerHTML = planet.distance_soleil
+    document.getElementById("info_periode").innerHTML = planet.periode_orbitale
+    document.getElementById("info_vitesse").innerHTML = planet.vitesse_orbitale
+    document.getElementById("info_atmo").innerHTML = planet.composition
+    document.getElementById("info_temp").innerHTML = planet.temperature_moyenne
 
     function animate(t) {
         requestAnimationFrame(animate);
