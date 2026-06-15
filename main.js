@@ -6,7 +6,6 @@ import {fetchJSONData, createPlanets, Planete} from "./loader.js";
 import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "./draw.js";
 import {createRaycaster, detect_click, createPointer, reset_pointer} from "./Collision.js"
 
-let method = "RK4"
 
 /**
  * Fonction principale qui initialise le système solaire. Gère la scène 3D, l'interface utilisateur, le raycasting et la boucle d'animation.
@@ -14,6 +13,12 @@ let method = "RK4"
 async function main() {
     const w = window.innerWidth;
     const h = window.innerHeight;
+    const parametresUrl = new URLSearchParams(window.location.search);
+    let method = parametresUrl.get('method');
+    if (!method) {
+        let method = "Rk4"
+    }
+    document.getElementById("radio_" + method.toLowerCase()).checked = true;
 
     //extract and create class
     const data_pos = await fetchJSONData('./methodes.json');
@@ -80,13 +85,15 @@ async function main() {
     detect_click(pointer)
     
     // create Light (for the 3d asset)
-    const light = createLight()
+    const light = createLight(1000)
     scene.add(light)
+    const camera_light = createLight(100)
+    scene.add(camera_light)
 
     const labelRenderer = createTextRenderer()
     document.body.appendChild(labelRenderer.domElement);
 
-    change_methode(planets, data_pos, scene);
+    change_methode(planets, scene);
 
 
     let time = 0
@@ -131,6 +138,8 @@ async function main() {
         if (followplanet != "Soleil") camerafollow(followplanet, camera, planets, controls)
 
         reset_pointer(pointer)
+
+        camera_light.position.copy(camera.position)
 
         if(time%60 == 0) menu(planets, Star)
         labelRenderer.render(scene, camera);
@@ -204,40 +213,19 @@ function OnclickPlanet(mesh) {
  * @param {Object} data_pos - Les données JSON des trajectoires.
  * @param {THREE.Scene} scene - La scène principale.
  */
-function change_methode(planets, data_pos, scene) {
-    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos, scene));
-    document.getElementById("radio_euler_assym")?.addEventListener("change", () => appliquerMethode("eulerAssym", planets, data_pos, scene));
-    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos, scene));
+function change_methode(planets, scene) {
+    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler"));
+    document.getElementById("radio_eulerassym")?.addEventListener("change", () => appliquerMethode("eulerAssym"));
+    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4"));
     document.getElementById("checkbox_planete_realiste")?.addEventListener("change", () => reload3D(planets, scene));
 }
 
 /**
  * Applique la nouvelle méthode mathématique.
  * @param {string} Method - Le nom de la méthode.
- * @param {Planete[]} planets - Le tableau des planetes.
- * @param {Object} data_pos - Les données JSON des trajectoires.
- * @param {THREE.Scene} scene - La scène 3D.
  */
-function appliquerMethode(Method, planets, data_pos, scene) {
-    planets.forEach(planet => {
-        console.log("aa")
-        if (planet.name !== "Soleil") {
-            const key = `${planet.name}_${Method}`;
-            
-            if (data_pos[key]) {
-                planet.position = data_pos[key];
-
-                if (planet.orbite_mesh) {
-                    scene.remove(planet.orbite_mesh);
-                    planet.orbite_mesh.geometry.dispose();
-                    planet.orbite_mesh.material.dispose();
-                }
-
-                const nouvelleOrbite = planet.drawOrbite();
-                if (nouvelleOrbite) scene.add(nouvelleOrbite);
-            }
-        }
-    });
+function appliquerMethode(Method) {
+    window.location.href = window.location.pathname + "?method=" + Method;
 }
 
 /**

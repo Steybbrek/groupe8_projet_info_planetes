@@ -82,9 +82,8 @@ function createStars(nb, distance_min) {
  * Crée une lumière au centre de la scène (comme le Soleil).
  * @returns {THREE.PointLight} La source de lumière.
  */
-function createLight() {
+function createLight(intensity) {
     const color = 0xFFFFFF;
-    const intensity = 1000;
     const light = new THREE.PointLight(color, intensity);
     light.position.set(0, 0, 0);
     return light;

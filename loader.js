@@ -148,7 +148,7 @@ class Planete {
             this.modele3D.scale.set(ratio, ratio, ratio); 
             this.mat.visible = false;
             this.mesh.add(this.modele3D);
-            this.camera_recul = tailleCible * 50
+            this.camera_recul = tailleCible * 25
         });
     }
 
