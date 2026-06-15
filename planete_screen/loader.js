@@ -22,7 +22,7 @@ class Planete {
         this.temperature_moyenne = data["Temperature_moyenne"]
 
         
-        this.geo = new THREE.SphereGeometry(this.diametre / this.scale_taille, 32, 32);
+        this.geo = new THREE.SphereGeometry(5, 32, 32);
         this.mat = new THREE.MeshBasicMaterial({
             color: this.color
         });

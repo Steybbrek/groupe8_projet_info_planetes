@@ -68,6 +68,7 @@ async function main() {
         const halo = planet.createHalo()
         if(halo != undefined) scene.add(halo)
     });
+    add_menu_planete(planets)
     
     //draw stars
     const Star = createStars(3000, 200)
@@ -126,6 +127,11 @@ async function main() {
             reset_pointer(pointer)
             OnclickPlanet(intersects[0].object)
         }
+        const followplanet = document.getElementById("planet_select").value
+        if (followplanet != "Soleil") camerafollow(followplanet, camera, planets, controls)
+
+        reset_pointer(pointer)
+
         if(time%60 == 0) menu(planets, Star)
         labelRenderer.render(scene, camera);
         renderer.render(scene, camera);
@@ -199,9 +205,9 @@ function OnclickPlanet(mesh) {
  * @param {THREE.Scene} scene - La scène principale.
  */
 function change_methode(planets, data_pos, scene) {
-    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos));
-    document.getElementById("radio_euler_async")?.addEventListener("change", () => appliquerMethode("eulerAsym", planets, data_pos));
-    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos));
+    document.getElementById("radio_euler")?.addEventListener("change", () => appliquerMethode("euler", planets, data_pos, scene));
+    document.getElementById("radio_euler_assym")?.addEventListener("change", () => appliquerMethode("eulerAssym", planets, data_pos, scene));
+    document.getElementById("radio_rk4")?.addEventListener("change", () => appliquerMethode("RK4", planets, data_pos, scene));
     document.getElementById("checkbox_planete_realiste")?.addEventListener("change", () => reload3D(planets, scene));
 }
 
@@ -212,8 +218,9 @@ function change_methode(planets, data_pos, scene) {
  * @param {Object} data_pos - Les données JSON des trajectoires.
  * @param {THREE.Scene} scene - La scène 3D.
  */
-function appliquerMethode(Method, planets, data_pos) {
+function appliquerMethode(Method, planets, data_pos, scene) {
     planets.forEach(planet => {
+        console.log("aa")
         if (planet.name !== "Soleil") {
             const key = `${planet.name}_${Method}`;
             
@@ -247,6 +254,32 @@ function reload3D(planets, scene) {
         let path = './3D_texture/' + planet.name + ".glb"
         planet.load_3D_model(path, ischeck("checkbox_planete_realiste"));
     });
+}
+
+function add_menu_planete(planets) {
+    const menu = document.getElementById("planet_select");
+
+    planets.forEach(planet => {
+        if (planet.name !== "Soleil") {
+            const option = document.createElement("option");
+            option.value = planet.name;
+            option.textContent = planet.name;
+            menu.appendChild(option);
+        }
+    });
+}
+
+function camerafollow(followplanet, camera, planets, controls){
+    planets.forEach(planet => {
+        if(planet.name == followplanet) {
+            const direction = new THREE.Vector3();
+            const sun_pos = new THREE.Vector3(1, 0, 1)
+            direction.subVectors(camera.position, sun_pos).normalize();
+            camera.position.copy(planet.camera_pos).addScaledVector(direction, planet.camera_recul);
+            controls.target.copy(planet.camera_pos);
+            controls.update();
+        }
+    })
 }
 
 main();

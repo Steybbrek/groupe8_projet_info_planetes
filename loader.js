@@ -16,6 +16,8 @@ class Planete {
     constructor(data, position) {
         this.scale_distance = 1e10;
         this.scale_taille = 5e5;
+        this.camera_pos = new THREE.Vector3;
+        this.camera_recul = 10;
 
         this.name = data["Name"];
         this.diametre = data["Diametre"];
@@ -66,6 +68,7 @@ class Planete {
             const y = this.position[i][0][1] / this.scale_distance;
             const z = this.position[i][0][2] / this.scale_distance;
             this.mesh.position.set(x, y, z);
+            this.camera_pos = new THREE.Vector3(x, y, z)
         }
     }
 
@@ -92,6 +95,7 @@ class Planete {
             // Interpolation linéaire (LERP) pour trouver le point intermédiaire exact
             vector_start.lerp(vecteur_end, frame/frametonext);
             this.mesh.position.copy(vector_start); 
+            this.camera_pos.copy(vector_start)
         }
     }
 
@@ -134,8 +138,6 @@ class Planete {
             const tailleActuelle = box.getSize(new THREE.Vector3()).x;
             
             let tailleCible = this.diametre / this.scale_taille;
-            
-            // Si le mode n'est pas réaliste, on s'assure que les petites planètes restent visibles
             if (!realiste) {
                 if (tailleCible < 0.1) {
                     tailleCible = 1;
@@ -144,10 +146,9 @@ class Planete {
             
             const ratio = tailleCible / tailleActuelle;
             this.modele3D.scale.set(ratio, ratio, ratio); 
-            
-            // On cache la sphère de base
             this.mat.visible = false;
             this.mesh.add(this.modele3D);
+            this.camera_recul = tailleCible * 50
         });
     }
 

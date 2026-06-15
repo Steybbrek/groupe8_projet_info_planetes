@@ -104,13 +104,4 @@ function createTextRenderer() {
     return labelRenderer;
 }
 
-/**
- * À FAIRE : Fonction de génération d'astéroïdes.
- * @param {number} nb - Le nombre d'astéroïdes.
- * @param {THREE.Vector3|Array} position - Les coordonnées de base ou l'orbite.
- */
-function createAsteroid(nb, position) {
-
-}
-
 export {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer};

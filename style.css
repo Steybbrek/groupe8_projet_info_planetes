@@ -138,3 +138,19 @@ form {
   border-color: #4aa8ff;
   box-shadow: 0 0 6px rgba(74, 168, 255, 0.5);
 }
+
+.select-container {
+    display: flex;
+    align-items: center; /* Aligne le texte et la box parfaitement au centre vertical */
+    gap: 10px; /* Crée un espace propre de 10px entre les deux */
+    
+    /* Optionnel : pour le style du texte */
+    color: white; 
+    font-family: sans-serif;
+}
+
+/* Optionnel : pour rendre la boîte un peu plus jolie */
+#planet-select {
+    padding: 5px;
+    border-radius: 4px;
+}
