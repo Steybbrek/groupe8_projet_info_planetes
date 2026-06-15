@@ -12,7 +12,6 @@ class Planete {
         this.diametre = data["Diametre"];
         this.color = data["Color"]
         this.position = position
-        console.log(position)
         this.label = null
         this.orbite_mesh = null
         this.modele3D = null

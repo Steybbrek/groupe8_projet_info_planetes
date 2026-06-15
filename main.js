@@ -166,8 +166,9 @@ function ischeck(id) {
 }
 
 function OnclickPlanet(mesh) {
-    console.log(mesh.userData.planet.name)
-    //window.location.href = "planete.html";
+    console.log(mesh.userData.planet.name.toLowerCase());
+    const url = `planete_screen/planete.html?cible=${mesh.userData.planet.name.toLowerCase()}`;
+    window.location.href = url;
 }
 
 function change_methode(planets, data_pos) {
