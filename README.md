@@ -18,7 +18,7 @@ Le fichier web/methodes.json est déjà généré, cependant si vous souhaitez t
 
 <pre><code>// bools
 #define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
-#define ENERGIE         0                           // Calcule de l'énergie du système (impact fort sur les perfs)
+#define ENERGIE         0                           // Calcul de l'énergie du système (impact fort sur les perfs)
 #define EULER_T         0                           // Euler Terminal
 #define EULER           1                           // Euler Interact
 #define EULER_ASSYM     1                           // Euler Assymétrique
@@ -90,7 +90,7 @@ Nous avons 3 options pour la compilation :
 Selections d'options et de parametres à changer avant la compilation :
 <pre><code>// bools
 #define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
-#define ENERGIE         0                           // Calcule de l'énergie du système (impact fort sur les perfs)
+#define ENERGIE         0                           // Calcul de l'énergie du système (impact fort sur les perfs)
 #define EULER_T         0                           // Euler Terminal
 #define EULER           1                           // Euler Interact
 #define EULER_ASSYM     1                           // Euler Assymétrique
@@ -104,12 +104,12 @@ Selections d'options et de parametres à changer avant la compilation :
 #define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)</code></pre>
 
 Booléens : 
- - **LOADING_BAR** : Barre de chargment
- - **ENERGIE** : Calculs d'énérgie et vérification de conservation d'énergie - affiche à la fin du programme les étapes dépassant la MARGE_ENERGIE 
- - **EULER_T** : Affiche dans le terminal dix étapes de la méthode d'Euler sans intéractions avec les autres planètes
- - **EULER** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler (intéractions avec les autes planètes)
- - **EULER_ASSYM** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler assymétrique (intéractions avec les autes planètes)
- - **RK 4** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode Runge-Kutta 4 (intéractions avec les autes planètes)
+ - **LOADING_BAR** : Barre de chargement
+ - **ENERGIE** : Calculs d'énergie et vérification de conservation d'énergie - affiche à la fin du programme les étapes dépassant la MARGE_ENERGIE 
+ - **EULER_T** : Affiche dans le terminal dix étapes de la méthode d'Euler sans interactions avec les autres planètes
+ - **EULER** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler (interactions avec les autres planètes)
+ - **EULER_ASSYM** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler assymétrique (interactions avec les autres planètes)
+ - **RK 4** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode Runge-Kutta 4 (interactions avec les autres planètes)
 
 Paramètres :
  - **N_PLANETS** : Le nombre de planètes
@@ -123,7 +123,7 @@ Paramètres :
 
 ### Position initiale : 
 
-Nous avons décidé de partir du [site de la NASA](https://ssd.jpl.nasa.gov/horizons/) afin d'obtenir les positions inititales de chaque planète.  
+Nous avons décidé de partir du [site de la NASA](https://ssd.jpl.nasa.gov/horizons/) afin d'obtenir les positions initiales de chaque planète.  
 Le temps de départ que nous avons choisi est le 10 Juin 2026 à 00:00 TDB (Temps Dynamique Barycentrique)  
 Le TDB est l'unité de temps par défaut du site, il est surtout utilisé en astronomie.  
 Il est indépendant des irrégularités de la rotation terrestre.

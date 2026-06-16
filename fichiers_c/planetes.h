@@ -16,7 +16,7 @@
 
 // bools
 #define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
-#define ENERGIE         0                           // Calcule de l'énergie du système (impact fort sur les perfs)
+#define ENERGIE         0                           // Calcul de l'énergie du système (impact fort sur les perfs)
 #define EULER_T         0                           // Euler Terminal
 #define EULER           1                           // Euler Interact
 #define EULER_ASSYM     1                           // Euler Assymétrique
@@ -27,7 +27,7 @@
 #define PAS_REEL                     300            // fréquence des calculs (sec)
 #define PAS_SAUVEGARDE               86400          // fréquence de sauvegarde (sec)
 #define PERIODE_ENREGISTREMENT       3652.5         // période de calculs à partir du 10 juin 2026 00:00:00 TDB (jours)
-#define MARGE_ENERGIE                0.02              // marge d'erreur pour l'énergie (en %)
+#define MARGE_ENERGIE                0.02           // marge d'erreur pour l'énergie (en %)
 
 // constantes à ne pas modifier
 #define G 6.67408e-11                               // constante de gravitation
