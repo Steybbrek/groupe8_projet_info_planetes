@@ -110,7 +110,7 @@ int main(){
 
     // End prog
     if(ENERGIE){
-        printf("\n\n[DEBUT] - Rapport des problèmes d'énergie à %d%%\n",MARGE_ENERGIE);
+        printf("\n\n[DEBUT] - Rapport des problèmes d'énergie à %lf%%\n",MARGE_ENERGIE);
         print_file(energie);
         printf("\n[ FIN ] - Rapport\n\n\n");
 

@@ -27,7 +27,7 @@
 #define PAS_REEL                     300            // fréquence des calculs (sec)
 #define PAS_SAUVEGARDE               86400          // fréquence de sauvegarde (sec)
 #define PERIODE_ENREGISTREMENT       3652.5         // période de calculs à partir du 10 juin 2026 00:00:00 TDB (jours)
-#define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)
+#define MARGE_ENERGIE                0.02              // marge d'erreur pour l'énergie (en %)
 
 // constantes à ne pas modifier
 #define G 6.67408e-11                               // constante de gravitation
@@ -92,7 +92,7 @@ double Ep(Planet * planets, int id_target);
 
 double Ec(Planet target);
 
-void ESysteme(Planet * planets, double * Esys, int jour, int etape, FILE * fileEnergie);
+void ESysteme(Planet * planets, double * Esys, int jour, FILE * fileEnergie);
 
 
 

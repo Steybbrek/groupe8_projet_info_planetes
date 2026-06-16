@@ -34,7 +34,7 @@ class Planete {
     }
 
     update_rotation(t) {
-        this.mesh.rotation.z = t * 0.0001
+        this.mesh.rotation.y = t * 0.0001
     }
 
     load_3D_model(fichier) {
