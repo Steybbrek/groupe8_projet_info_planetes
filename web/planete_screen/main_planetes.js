@@ -5,7 +5,7 @@ import {fetchJSONData, createPlanet, Planete} from "./loader.js";
 import {createScene, createCamera, createRenderer, createControls, createStars, createLight, createTextRenderer} from "../draw.js";
 
 /**
- * Fonction principale asynchrone qui initialise l'environnement 3D, charge les données de la planète ciblée et lance la boucle d'animation.
+ * Fonction principale qui initialise l'environnement 3D, charge les données de la planète ciblée et lance la boucle d'animation.
  */
 async function main() {
     const w = window.innerWidth*2/3;

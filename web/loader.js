@@ -15,7 +15,7 @@ class Planete {
      */
     constructor(data, position) {
         this.scale_distance = 1e10;
-        this.scale_taille = 5e5;
+        this.scale_taille = 1e7;
         this.camera_pos = new THREE.Vector3;
         this.camera_recul = 10;
 
@@ -55,7 +55,7 @@ class Planete {
      * @param {number} t - Le temps écoulé depuis le début de l'animation.
      */
     update_rotation(t) {
-        this.mesh.rotation.z = t * 0.0001;
+        this.mesh.rotation.y = t * 0.0001;
     }
 
     /**
@@ -148,7 +148,8 @@ class Planete {
             this.modele3D.scale.set(ratio, ratio, ratio); 
             this.mat.visible = false;
             this.mesh.add(this.modele3D);
-            this.camera_recul = tailleCible * 12.5;
+            this.mesh.rotateX(23.5);
+            this.camera_recul = (tailleCible)* 3
         });
     }
 
@@ -263,7 +264,7 @@ function createPlanets(data_pos, data_info, method) {
             positions = [ [[0, 0, 0], [0, 0, 0], 0] ];
         } else {
             // Reconstruit dynamiquement la clef (ex: "terre_RK4")
-            const key = `${planete_name}_${method}`;
+            const key = `${planete_name}-${method}`;
             positions = data_pos[key];
         }
         planets.push(new Planete(info, positions));

@@ -185,8 +185,10 @@ double Ec(Planet target){
  * @brief Calcule l'énergie du système et si la marge d'erreur est dépassée, écrit un message dans un fichier
  * @param planets Liste de planètes
  * @param Esys Pointeur sur l'énergie cynétique précédente
+ * @param jour Nombre de jour qui s'est écoulé
+ * @param fileEnergie Fichier d'enregistrement
  */
-void ESysteme(Planet * planets, double * Esys, int jour, int etape, FILE * fileEnergie){
+void ESysteme(Planet * planets, double * Esys, int jour, FILE * fileEnergie){
     double Etot = 0;
 
     for (int i = 0; i < N_PLANETS ; i++){
@@ -196,7 +198,7 @@ void ESysteme(Planet * planets, double * Esys, int jour, int etape, FILE * fileE
     if(*Esys == -3.1415926535) *Esys = Etot;
 
     if (Etot > *Esys * (1+MARGE_ENERGIE*0.01) || Etot < *Esys * (1-MARGE_ENERGIE*0.01)){
-        fprintf(fileEnergie,"Variation de plus de %d%% détectée au jour %d, étape %d\n", MARGE_ENERGIE, jour, etape);
+        fprintf(fileEnergie,"Variation d'énergie de plus de %lf%% détectée au jour %d, valeur exacte : %lf%%\n\n", MARGE_ENERGIE, jour, ((Etot - *Esys) / *Esys) * 100);
     } 
 
     *Esys = Etot;
@@ -521,15 +523,15 @@ Planet * reset(Planet * planets){
  * @note Nombre d'essaies pour créer la fonction : 1
  */
 void initiateFileData(TempFILE * p_file, char * prefixe, char * name){
-    // fichier json => ./temp_json_files/prefixe_name.json
-    strcpy(p_file->path,"./temp_json_files/");
+    // fichier json => ./temp_json_files/temp-prefixe-name.json
+    strcpy(p_file->path,"./temp_json_files/temp-");
     strcat(p_file->path, prefixe);
-    strcat(p_file->path,"_");
+    strcat(p_file->path,"-");
     strcat(p_file->path, name);
     strcat(p_file->path, ".json");
     p_file->file = fopen(p_file->path,"w+");
-    // "name_prefixe": <= début fichier json
-    fprintf(p_file->file,"    \"%s_%s\":",name,prefixe);
+    // "name-prefixe": <= début fichier json
+    fprintf(p_file->file,"    \"%s-%s\":",name,prefixe);
 }
 
 /**
@@ -632,12 +634,11 @@ void createTempFiles(Planet * planet_list, TempFILE * files_list, float jours, v
         for (int j = 0; j < PAS_SAUVEGARDE / PAS_REEL; j++){
             f(planet_list, PAS_REEL);
             print_loading_bar((i - 1) * PAS_SAUVEGARDE / PAS_REEL + j, (DAY_TO_SEC * jours) / PAS_REEL, &progress);
-
-            if(ENERGIE) ESysteme(planet_list,&Esys,i,j,energie);
         }
         for (int j = 0; j < N_PLANETS; j++){
             saveFile(files_list[j].file, planet_list[j], i);
         }
+        if(ENERGIE) ESysteme(planet_list,&Esys,i,energie);
     }
     for (int i = 0; i < N_PLANETS; i++){
         fprintf(files_list[i].file,"]");
@@ -726,7 +727,7 @@ void print_options(){
     printf("   - Période d'enregistrement :         %.2lf jours\n",PERIODE_ENREGISTREMENT);
     printf("   - Pas de sauvegarde :                %d sec\n",PAS_SAUVEGARDE);
     printf("   - Pas reel :                         %d sec\n",PAS_REEL);
-    printf("   - Marge d'erreur énergie du sytème : %d%%\n",RK4);
+    printf("   - Marge d'erreur énergie du sytème : %lf%%\n",MARGE_ENERGIE);
     printf("\n");
 }
 

@@ -8,7 +8,7 @@ Nous vous conseillons d'utiliser l'extension VS code [Live Server](https://marke
 
 #### **Le fichier web/methodes.json**
 
-Le fichier web/methodes.json est déjà généré, cependant si vous souhaitez tester avec des paramètres différents, nous vous conseillons d'être sur linux / de d'adapter le fichiers_c/makefile à votre système d'exploitation
+Le fichier web/methodes.json est déjà généré, cependant si vous souhaitez tester avec des paramètres différents, nous vous conseillons d'être sur linux / de l'adapter le fichiers_c/makefile à votre système d'exploitation
 
 ---
 
@@ -26,7 +26,7 @@ Le fichier web/methodes.json est déjà généré, cependant si vous souhaitez t
 
 // constantes modifiables / paramètres
 #define N_PLANETS                    14             // nombre de planètes / objets
-#define PAS_REEL                     60            // fréquence des calculs (sec)
+#define PAS_REEL                     300            // fréquence des calculs (sec)
 #define PAS_SAUVEGARDE               86400          // fréquence de sauvegarde (sec)
 #define PERIODE_ENREGISTREMENT       3652.5         // période de calculs à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)</code></pre>
@@ -87,7 +87,7 @@ Nous avons 3 options pour la compilation :
 
 ### fichiers_c/planetes.h
 
-Selections d'options et de parametres de compilation :
+Selections d'options et de parametres à changer avant la compilation :
 <pre><code>// bools
 #define LOADING_BAR     1                           // Affichage d'une barre de chargement (impact très léger sur les perfs)
 #define ENERGIE         0                           // Calcule de l'énergie du système (impact fort sur les perfs)
@@ -103,6 +103,20 @@ Selections d'options et de parametres de compilation :
 #define PERIODE_ENREGISTREMENT       3652.5         // période de calculs à partir du 10 juin 2026 00:00:00 TDB (jours)
 #define MARGE_ENERGIE                1              // marge d'erreur pour l'énergie (en %)</code></pre>
 
+Booléens : 
+ - **LOADING_BAR** : Barre de chargment
+ - **ENERGIE** : Calculs d'énérgie et vérification de conservation d'énergie - affiche à la fin du programme les étapes dépassant la MARGE_ENERGIE 
+ - **EULER_T** : Affiche dans le terminal dix étapes de la méthode d'Euler sans intéractions avec les autres planètes
+ - **EULER** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler (intéractions avec les autes planètes)
+ - **EULER_ASSYM** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode d'Euler assymétrique (intéractions avec les autes planètes)
+ - **RK 4** : Enregistre dans le fichiers "web/methodes.json" les données calculées par la méthode Runge-Kutta 4 (intéractions avec les autes planètes)
+
+Paramètres :
+ - **N_PLANETS** : Le nombre de planètes
+ - **PAS_REEL** : Le pas de calcul, à l'échelle du système (sec)
+ - **PAS_SAUVEGARDE** : Le pas entre chaque sauvegarde de valeurs dans le fichier json (sec)
+ - **PERIODE_ENREGISTRE** : Période des calculs, à partir du 10 juin 2026 00:00:00 TDB (en jours)
+ - **MARGE_ENERGIE** : Marge d'erreur pour l'énergie du système (variation max entre 2 calculs) en %
 ---
 
 ## Données planétaires : 
@@ -118,7 +132,7 @@ Il est indépendant des irrégularités de la rotation terrestre.
 
 ### Ajouter une autre planète :
 
-*On considère que l'utilisateur souhaite ajouter une planète à une liste de n planètes*
+*On considère que l'utilisateur souhaite ajouter une planète à une liste de n planètes, dont le nom est [NomPlanete]*
 
 #### **1 - fichiers_c/planetes.h**
 
@@ -143,7 +157,7 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
 
     ...
 
-    initiateFileData(&files[n], prefixe, "[nomPlanete]");
+    initiateFileData(&files[n], prefixe, "[nomplanete]"); // nom en minuscule
 
     return files;
 }</code></pre>
@@ -152,8 +166,8 @@ TempFILE * initFiles(TempFILE * files, char * prefixe){
 
 Ajouter le reste des informations :  
 <pre><code>...
-    "[nomPlanete]": {
-        "Name": "[NomPlanete]",
+    "[nomplanete]": {                           // nom en minuscule
+        "Name": "[NomPlanete]",                 // nom en majuscule
         "Color": "rgb([couleurPlanete])",
         "Diametre": [diametre],
         "Masse": "[m] kg",
@@ -169,6 +183,6 @@ Ajouter le reste des informations :
 #### **4 - web/3D_texture/**
 
 Ajouter un modèle 3D de la planète :
-<pre><code>[NomPlanete].glb</code></pre>
+<pre><code>[NomPlanete].glb      # nom en majuscule</code></pre>
 
 ---
